@@ -25,7 +25,7 @@ You'll need two free accounts:
 
 1. Sign in to GitHub and click the **Fork** button at the top of this repository. This makes your own personal copy of the code — Railway will deploy from that copy.
 
-2. Sign in to Railway, click **New Project → Deploy from GitHub repo**, and select your forked `formation-tracker` repository. Railway detects it's a Node.js app automatically.
+2. Sign in to Railway, click **New Project → Deploy from GitHub repo**, and select your forked `simple-student-tracker` repository. Railway detects it's a Node.js app automatically.
 
 3. Go to your project's **Settings** and add one environment variable:
    - Key: `PORT` — Value: `3000`
