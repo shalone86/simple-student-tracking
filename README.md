@@ -27,11 +27,17 @@ You'll need two free accounts:
 
 2. Sign in to Railway, click **New Project → Deploy from GitHub repo**, allow Railway to see your GitHub project, and select your forked `simple-student-tracker` repository. Railway detects it's a Node.js app automatically.
 
-3. Go to your project's **Settings** (the gear icon), click "Shared Variables", under **production**, and add one variable:
-   - Key: `PORT` — Value: `3000` (click add)
-
-4. Click **Deploy**. Click **architecture**. Click the box with the name of your app. Click settings. Under networking, select **generate domain**.
-5. Also, you can use a custom domain or TCP Proxy. Please follow Railway's instructions for further guidance on those deployments.
+3. Go to your project's **Settings** (the gear icon),
+4. Click "Shared Variables", under **production**, and add one variable:
+- Key: `PORT` — Value: `3000` (click add)
+5. Make a Volume
+  Go to architecture,
+  right-click anywhere on the dotted grid.
+  Select **Volume**.
+  Select the name of your product as the service to attach.
+  Type **/data** as the path and hit enter.
+6. Click **Deploy**. Click **architecture**. Click the box with the name of your app. Click settings. Under networking, select **generate domain**.
+7. Also, you can use a custom domain or TCP Proxy. Please follow Railway's instructions for further guidance on those deployments.
 
 **Cost:** Railway's free tier works for light use. Their Hobby plan ($5/month) is recommended for active parishes and keeps the app running around the clock.
 
