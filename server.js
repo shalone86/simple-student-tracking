@@ -410,6 +410,33 @@ app.put('/api/profile', (req, res) => {
   });
 });
 
+// ── ADMIN: EDIT MEMBER ────────────────────────────────────────────────────
+app.put('/api/admin/student', (req, res) => {
+  const { original_email, name, email, password, parish_group } = req.body;
+  if (!original_email) return res.status(400).json({ error: 'Missing original email.' });
+  db.run("UPDATE students SET name=COALESCE(?,name), email=COALESCE(?,email), password=COALESCE(?,password), parish_group=COALESCE(?,parish_group) WHERE email=?",
+    [name||null, email||null, password||null, parish_group||null, original_email],
+    function(e) { if (e) return res.status(400).json({ error: 'Email may already be in use.' }); res.json({ success: true }); });
+});
+
+app.put('/api/admin/teacher', (req, res) => {
+  const { original_email, name, email, password, assigned_group } = req.body;
+  if (!original_email) return res.status(400).json({ error: 'Missing original email.' });
+  db.run("UPDATE teachers SET name=COALESCE(?,name), email=COALESCE(?,email), password=COALESCE(?,password), assigned_group=COALESCE(?,assigned_group) WHERE email=?",
+    [name||null, email||null, password||null, assigned_group||null, original_email],
+    function(e) { if (e) return res.status(400).json({ error: 'Email may already be in use.' }); res.json({ success: true }); });
+});
+
+app.delete('/api/admin/student/:email', (req, res) => {
+  const email = decodeURIComponent(req.params.email);
+  db.run("DELETE FROM students WHERE email=?", [email], () => res.json({ success: true }));
+});
+
+app.delete('/api/admin/teacher/:email', (req, res) => {
+  const email = decodeURIComponent(req.params.email);
+  db.run("DELETE FROM teachers WHERE email=?", [email], () => res.json({ success: true }));
+});
+
 // ── QUIZ QUESTIONS ─────────────────────────────────────────────────────────
 app.get('/api/quiz-questions/:lessonId', (req, res) => {
   db.all("SELECT * FROM quiz_questions WHERE lesson_id=? ORDER BY sort_order, id", [req.params.lessonId], (e, rows) => res.json(rows || []));
