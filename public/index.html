@@ -3,320 +3,403 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Parish Formation Tracker</title>
+<title>Formation Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy: #1a2744; --navy-light: #243560;
-  --gold: #c9a84c; --gold-light: #e8cc85;
-  --cream: #f5f0e8; --cream-dark: #ede5d4;
-  --text: #2c2c2c; --text-muted: #6b6b6b;
-  --white: #ffffff; --red: #8b2020;
-  --green: #2a6040; --green-light: #e8f4ee;
-  --amber: #7a5a0a; --blue: #1a4a7a;
-  --shadow: 0 4px 24px rgba(26,39,68,0.12);
-  --radius: 10px;
+  --navy:#1a2744;--navy-light:#243560;--gold:#c9a84c;--gold-light:#e8cc85;
+  --cream:#f5f0e8;--cream-dark:#ede5d4;--text:#2c2c2c;--text-muted:#6b6b6b;
+  --white:#ffffff;--red:#8b2020;--green:#2a6040;--green-light:#e8f4ee;
+  --amber:#7a5a0a;--blue:#1a4a7a;--shadow:0 4px 24px rgba(26,39,68,.12);--radius:10px;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Jost', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
-h1,h2,h3,h4 { font-family: 'Cormorant Garamond', serif; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+h1,h2,h3,h4{font-family:'Cormorant Garamond',serif;}
+.screen{display:none;min-height:100vh;}
+.screen.active{display:flex;flex-direction:column;}
 
-.screen { display: none; min-height: 100vh; }
-.screen.active { display: flex; flex-direction: column; }
+/* AUTH */
+.auth-bg{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 55%,#2d4a8a 100%);
+  padding:20px;position:relative;overflow:hidden;}
+.auth-bg::before{content:'✝';position:absolute;font-size:40vw;color:rgba(255,255,255,.02);
+  font-family:serif;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+.auth-card{background:var(--white);border-radius:18px;padding:44px 38px;
+  max-width:520px;width:100%;box-shadow:0 32px 80px rgba(0,0,0,.35);position:relative;z-index:1;}
+.auth-card.wide{max-width:620px;}
+.auth-brand{text-align:center;margin-bottom:28px;}
+.auth-cross{font-size:2rem;color:var(--gold);line-height:1;margin-bottom:8px;}
+.auth-brand h1{font-size:2rem;color:var(--navy);line-height:1.1;}
+.auth-brand .sub{color:var(--text-muted);font-size:.83rem;letter-spacing:.04em;margin-top:4px;}
+.auth-brand .motto{color:var(--gold);font-style:italic;font-size:.95rem;margin-top:4px;font-family:'Cormorant Garamond',serif;}
+.auth-link{text-align:center;margin-top:14px;font-size:.84rem;color:var(--text-muted);}
+.auth-link a{color:var(--navy);font-weight:600;text-decoration:none;cursor:pointer;}
+.auth-link a:hover{color:var(--gold);}
+.auth-divider{text-align:center;color:var(--text-muted);font-size:.78rem;margin:8px 0 14px;}
 
-/* ── AUTH SCREENS ── */
-.auth-bg {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 55%, #2d4a8a 100%);
-  padding: 20px; position: relative; overflow: hidden;
-}
-.auth-bg::before {
-  content: '✝'; position: absolute; font-size: 40vw; color: rgba(255,255,255,0.02);
-  font-family: serif; top: 50%; left: 50%; transform: translate(-50%,-50%);
-  pointer-events: none; user-select: none;
-}
-.auth-card {
-  background: var(--white); border-radius: 18px; padding: 48px 40px;
-  max-width: 480px; width: 100%; box-shadow: 0 32px 80px rgba(0,0,0,0.35);
-  position: relative; z-index: 1;
-}
-.auth-brand { text-align: center; margin-bottom: 32px; }
-.auth-cross { font-size: 2.2rem; color: var(--gold); line-height: 1; margin-bottom: 10px; }
-.auth-brand h1 { font-size: 2.1rem; color: var(--navy); line-height: 1.1; }
-.auth-brand .sub { color: var(--text-muted); font-size: 0.85rem; letter-spacing: 0.04em; margin-top: 4px; }
-.auth-brand .motto { color: var(--gold); font-style: italic; font-size: 0.95rem; margin-top: 4px; font-family: 'Cormorant Garamond', serif; }
-.auth-link { text-align: center; margin-top: 16px; font-size: 0.85rem; color: var(--text-muted); }
-.auth-link a { color: var(--navy); font-weight: 600; text-decoration: none; cursor: pointer; }
-.auth-link a:hover { color: var(--gold); }
-.auth-divider { text-align: center; color: var(--text-muted); font-size: 0.8rem; margin: 8px 0 16px; }
+/* SETUP STEPS */
+.setup-section{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--cream-dark);}
+.setup-section:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.setup-section-label{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--navy);margin-bottom:12px;opacity:.7;}
+.org-type-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:4px;}
+.org-type-btn{padding:14px 8px;border:2px solid var(--cream-dark);border-radius:10px;background:var(--cream);
+  cursor:pointer;text-align:center;transition:all .18s;font-family:'Jost',sans-serif;}
+.org-type-btn:hover{border-color:#aaa;}
+.org-type-btn.active{border-color:var(--navy);background:rgba(26,39,68,.06);}
+.org-type-btn .otb-icon{font-size:1.5rem;display:block;margin-bottom:6px;}
+.org-type-btn .otb-label{font-size:.78rem;font-weight:600;color:var(--navy);}
+.org-type-btn .otb-sub{font-size:.68rem;color:var(--text-muted);margin-top:2px;}
+.eastern-lessons-box{background:#f0f4ff;border:1px solid #c8d8f8;border-radius:10px;
+  padding:16px 18px;margin-top:4px;display:none;}
+.eastern-lessons-box.show{display:block;}
+.eastern-lessons-box h4{font-size:.95rem;color:var(--navy);margin-bottom:8px;}
+.eastern-lessons-box p{font-size:.82rem;color:var(--text-muted);line-height:1.55;margin-bottom:10px;}
+.book-links{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.book-link{font-size:.8rem;color:var(--navy);text-decoration:none;display:flex;align-items:center;gap:6px;}
+.book-link:hover{color:var(--gold);}
 
-/* ── FORM FIELDS ── */
-.field { margin-bottom: 16px; }
-.field label { display: block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--navy); margin-bottom: 6px; }
-.field input, .field select, .field textarea {
-  width: 100%; padding: 11px 14px; border: 1.5px solid #d4cfc4; border-radius: 8px;
-  font-family: 'Jost', sans-serif; font-size: 0.93rem; color: var(--text);
-  background: var(--cream); transition: border-color 0.2s, background 0.2s;
-}
-.field input:focus, .field select:focus, .field textarea:focus {
-  outline: none; border-color: var(--gold); background: var(--white);
-}
-.field textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
-.field .hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 5px; }
-.check-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-.check-row input[type=checkbox] { width: 17px; height: 17px; accent-color: var(--navy); }
-.check-row label { font-size: 0.88rem; color: var(--text-muted); cursor: pointer; }
+/* FIELDS */
+.field{margin-bottom:15px;}
+.field label{display:block;font-size:.73rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--navy);margin-bottom:5px;}
+.field input,.field select,.field textarea{width:100%;padding:10px 13px;border:1.5px solid #d4cfc4;
+  border-radius:8px;font-family:'Jost',sans-serif;font-size:.92rem;color:var(--text);
+  background:var(--cream);transition:border-color .2s,background .2s;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);background:var(--white);}
+.field textarea{resize:vertical;min-height:90px;line-height:1.6;}
+.field .hint{font-size:.73rem;color:var(--text-muted);margin-top:4px;line-height:1.45;}
+.check-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.check-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--navy);}
+.check-row label{font-size:.87rem;color:var(--text-muted);cursor:pointer;}
 
-/* ── BUTTONS ── */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 22px; border-radius: 8px; border: none; font-family: 'Jost', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.18s; letter-spacing: 0.03em; }
-.btn-primary { background: var(--navy); color: var(--white); }
-.btn-primary:hover { background: var(--navy-light); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(26,39,68,0.28); }
-.btn-gold { background: var(--gold); color: var(--navy); }
-.btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); }
-.btn-ghost { background: transparent; color: var(--navy); border: 1.5px solid #ccc; }
-.btn-ghost:hover { border-color: var(--navy); background: rgba(26,39,68,0.05); }
-.btn-danger { background: var(--red); color: var(--white); }
-.btn-danger:hover { opacity: 0.88; }
-.btn-sm { padding: 7px 14px; font-size: 0.8rem; }
-.btn-xs { padding: 4px 10px; font-size: 0.75rem; }
-.btn-full { width: 100%; }
-.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; }
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 20px;
+  border-radius:8px;border:none;font-family:'Jost',sans-serif;font-size:.87rem;font-weight:600;
+  cursor:pointer;transition:all .18s;letter-spacing:.03em;}
+.btn-primary{background:var(--navy);color:var(--white);}
+.btn-primary:hover{background:var(--navy-light);transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,39,68,.28);}
+.btn-gold{background:var(--gold);color:var(--navy);}
+.btn-gold:hover{background:var(--gold-light);transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--navy);border:1.5px solid #ccc;}
+.btn-ghost:hover{border-color:var(--navy);background:rgba(26,39,68,.05);}
+.btn-danger{background:var(--red);color:var(--white);}
+.btn-danger:hover{opacity:.88;}
+.btn-sm{padding:6px 13px;font-size:.79rem;}
+.btn-xs{padding:4px 10px;font-size:.74rem;}
+.btn-full{width:100%;}
+.btn:disabled{opacity:.42;cursor:not-allowed;transform:none!important;}
 
-.error-msg { background: #fdf0f0; border: 1px solid #e8b4b4; color: var(--red); padding: 10px 14px; border-radius: 8px; font-size: 0.88rem; margin-bottom: 14px; display: none; }
-.error-msg.show { display: block; }
-.success-msg { background: var(--green-light); border: 1px solid #a8d8b8; color: var(--green); padding: 10px 14px; border-radius: 8px; font-size: 0.88rem; margin-bottom: 14px; display: none; }
-.success-msg.show { display: block; }
+.error-msg{background:#fdf0f0;border:1px solid #e8b4b4;color:var(--red);padding:9px 13px;
+  border-radius:8px;font-size:.87rem;margin-bottom:13px;display:none;}
+.error-msg.show{display:block;}
+.success-msg{background:var(--green-light);border:1px solid #a8d8b8;color:var(--green);padding:9px 13px;
+  border-radius:8px;font-size:.87rem;margin-bottom:13px;display:none;}
+.success-msg.show{display:block;}
+.info-box{background:#eef4fd;border:1px solid #b8d0f0;color:var(--blue);padding:11px 15px;
+  border-radius:8px;font-size:.84rem;line-height:1.5;margin-bottom:16px;}
 
-/* ── APP LAYOUT ── */
-.app-layout { display: flex; height: 100vh; overflow: hidden; }
-.sidebar {
-  width: 272px; min-width: 272px; background: var(--navy); color: var(--white);
-  display: flex; flex-direction: column; overflow: hidden;
-}
-.sidebar-header { padding: 22px 20px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
-.sidebar-header .parish-name { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; line-height: 1.25; color: var(--white); }
-.sidebar-header .user-badge { font-size: 0.74rem; color: var(--gold-light); margin-top: 4px; opacity: 0.9; }
-.sidebar-nav { flex: 1; overflow-y: auto; padding: 10px 0; }
-.nav-section { padding: 10px 20px 4px; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.35); }
-.nav-item {
-  display: flex; align-items: center; gap: 11px; padding: 10px 20px;
-  cursor: pointer; font-size: 0.88rem; color: rgba(255,255,255,0.7);
-  transition: all 0.15s; border-left: 3px solid transparent;
-}
-.nav-item:hover { background: rgba(255,255,255,0.07); color: var(--white); }
-.nav-item.active { background: rgba(201,168,76,0.13); color: var(--gold-light); border-left-color: var(--gold); }
-.nav-item .icon { font-size: 0.95rem; width: 18px; text-align: center; }
-.sidebar-footer { padding: 14px 20px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; gap: 8px; }
-.sidebar-footer .btn { flex: 1; font-size: 0.78rem; padding: 8px 10px; color: rgba(255,255,255,0.8); border-color: rgba(255,255,255,0.25); }
-.sidebar-footer .btn:hover { color: var(--white); border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.08); }
+/* APP LAYOUT */
+.app-layout{display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:272px;min-width:272px;background:var(--navy);color:var(--white);display:flex;flex-direction:column;overflow:hidden;}
+.sidebar-header{padding:20px 20px 13px;border-bottom:1px solid rgba(255,255,255,.08);}
+.sidebar-header .parish-name{font-family:'Cormorant Garamond',serif;font-size:1.2rem;line-height:1.25;color:var(--white);}
+.sidebar-header .user-badge{font-size:.72rem;color:var(--gold-light);margin-top:3px;opacity:.9;}
+.sidebar-nav{flex:1;overflow-y:auto;padding:8px 0;}
+.nav-section{padding:9px 20px 3px;font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.32);}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;cursor:pointer;font-size:.87rem;
+  color:rgba(255,255,255,.7);transition:all .15s;border-left:3px solid transparent;}
+.nav-item:hover{background:rgba(255,255,255,.07);color:var(--white);}
+.nav-item.active{background:rgba(201,168,76,.13);color:var(--gold-light);border-left-color:var(--gold);}
+.nav-item .icon{font-size:.92rem;width:17px;text-align:center;}
+.sidebar-footer{padding:13px 20px;border-top:1px solid rgba(255,255,255,.08);display:flex;gap:8px;}
+.sidebar-footer .btn{flex:1;font-size:.76rem;padding:8px 9px;color:rgba(255,255,255,.82);border-color:rgba(255,255,255,.22);}
+.sidebar-footer .btn:hover{color:var(--white);border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.08);}
 
-.main-content { flex: 1; overflow-y: auto; background: var(--cream); }
-.page { padding: 32px 36px; max-width: 1080px; }
-.page-header { margin-bottom: 26px; display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-.page-header-text h2 { font-size: 1.9rem; color: var(--navy); }
-.page-header-text p { color: var(--text-muted); margin-top: 3px; font-size: 0.9rem; }
+.main-content{flex:1;overflow-y:auto;background:var(--cream);}
+.page{padding:30px 34px;max-width:1080px;}
+.page-header{margin-bottom:24px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.page-header-text h2{font-size:1.85rem;color:var(--navy);}
+.page-header-text p{color:var(--text-muted);margin-top:3px;font-size:.88rem;}
 
-/* ── CARDS ── */
-.card { background: var(--white); border-radius: var(--radius); padding: 22px 24px; box-shadow: var(--shadow); margin-bottom: 18px; }
-.card-title { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; color: var(--navy); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
-.card-title::before { content: ''; display: block; width: 3px; height: 1.2rem; background: var(--gold); border-radius: 2px; flex-shrink: 0; }
-.card-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+/* CARDS */
+.card{background:var(--white);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow);margin-bottom:16px;}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--navy);margin-bottom:14px;
+  display:flex;align-items:center;gap:9px;}
+.card-title::before{content:'';display:block;width:3px;height:1.15rem;background:var(--gold);border-radius:2px;flex-shrink:0;}
 
-/* ── STUDENT TABS ── */
-.student-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-.student-tab {
-  padding: 8px 16px; border-radius: 20px; border: 1.5px solid var(--cream-dark);
-  background: var(--white); font-size: 0.83rem; cursor: pointer; transition: all 0.2s;
-  font-family: 'Jost', sans-serif; color: var(--text-muted);
-}
-.student-tab:hover { border-color: var(--navy); color: var(--navy); }
-.student-tab.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
+/* ONBOARDING */
+.onboarding-card{background:linear-gradient(135deg,#f0f4ff,#fff);border:1px solid #c8d8f8;border-radius:12px;padding:20px 22px;margin-bottom:18px;}
+.onboarding-card h3{color:var(--navy);font-size:1.2rem;margin-bottom:14px;}
+.onboarding-steps{display:flex;flex-direction:column;gap:8px;}
+.onboarding-step{display:flex;align-items:center;gap:12px;font-size:.88rem;}
+.onboarding-step .step-check{width:22px;height:22px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:.72rem;flex-shrink:0;cursor:default;}
+.onboarding-step.done .step-check{background:var(--green);border-color:var(--green);color:white;}
+.onboarding-step.todo .step-check{border-color:#ccc;color:#ccc;}
+.onboarding-step .step-text{color:var(--text-muted);}
+.onboarding-step.todo .step-text a{color:var(--navy);font-weight:600;text-decoration:none;cursor:pointer;}
+.onboarding-step.todo .step-text a:hover{color:var(--gold);}
+.onboarding-step.done .step-text{text-decoration:line-through;color:#aaa;}
 
-/* ── LESSON ITEMS ── */
-.lesson-item { border: 1.5px solid var(--cream-dark); border-radius: 8px; margin-bottom: 7px; overflow: hidden; transition: border-color 0.2s; }
-.lesson-item:hover { border-color: #c8b890; }
-.lesson-header { display: flex; align-items: center; gap: 10px; padding: 13px 16px; cursor: pointer; background: var(--white); transition: background 0.15s; }
-.lesson-header:hover { background: #fdf8f0; }
-.lesson-num { font-size: 0.7rem; color: var(--text-muted); min-width: 26px; font-weight: 500; }
-.lesson-title-txt { flex: 1; font-size: 0.9rem; font-weight: 500; }
-.lesson-ref { font-size: 0.72rem; color: var(--text-muted); font-style: italic; white-space: nowrap; }
-.status-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-.status-dot.not_started { background: #ccc; }
-.status-dot.in_progress { background: #e8a020; }
-.status-dot.complete { background: #2a8040; }
-.lesson-status-label { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; }
-.comment-pip { font-size: 0.7rem; color: var(--gold); }
-.has-content-pip { font-size: 0.7rem; color: var(--blue); }
-.expand-arrow { font-size: 0.65rem; color: var(--text-muted); transition: transform 0.22s; margin-left: 4px; }
-.lesson-item.expanded .expand-arrow { transform: rotate(180deg); }
+/* STUDENT TABS */
+.student-tabs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px;}
+.student-tab{padding:7px 15px;border-radius:20px;border:1.5px solid var(--cream-dark);
+  background:var(--white);font-size:.82rem;cursor:pointer;transition:all .2s;font-family:'Jost',sans-serif;color:var(--text-muted);}
+.student-tab:hover{border-color:var(--navy);color:var(--navy);}
+.student-tab.active{background:var(--navy);color:var(--white);border-color:var(--navy);}
 
-.lesson-body { display: none; padding: 18px 20px 20px; background: #fdf8f0; border-top: 1px solid var(--cream-dark); }
-.lesson-item.expanded .lesson-body { display: block; }
+/* LESSON ITEMS */
+.lesson-item{border:1.5px solid var(--cream-dark);border-radius:8px;margin-bottom:6px;overflow:hidden;transition:border-color .2s;}
+.lesson-item:hover{border-color:#c8b890;}
+.lesson-header{display:flex;align-items:center;gap:9px;padding:12px 15px;cursor:pointer;background:var(--white);transition:background .15s;}
+.lesson-header:hover{background:#fdf8f0;}
+.lesson-num{font-size:.68rem;color:var(--text-muted);min-width:24px;font-weight:500;}
+.lesson-title-txt{flex:1;font-size:.89rem;font-weight:500;}
+.lesson-ref{font-size:.7rem;color:var(--text-muted);font-style:italic;white-space:nowrap;}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.status-dot.not_started{background:#ccc;}
+.status-dot.in_progress{background:#e8a020;}
+.status-dot.complete{background:#2a8040;}
+.lesson-status-label{font-size:.7rem;color:var(--text-muted);white-space:nowrap;}
+.has-content-pip{font-size:.68rem;color:var(--blue);}
+.quiz-pip{font-size:.68rem;color:#6a3a9a;}
+.expand-arrow{font-size:.63rem;color:var(--text-muted);transition:transform .22s;margin-left:3px;}
+.lesson-item.expanded .expand-arrow{transform:rotate(180deg);}
+.lesson-body{display:none;padding:16px 18px 18px;background:#fdf8f0;border-top:1px solid var(--cream-dark);}
+.lesson-item.expanded .lesson-body{display:block;}
+.lesson-content-display{margin-bottom:13px;}
+.lesson-body-text{background:var(--white);border-radius:8px;padding:14px 16px;font-size:.9rem;
+  line-height:1.75;color:var(--text);border-left:3px solid var(--gold);margin-bottom:9px;white-space:pre-wrap;}
+.lesson-video-link{display:inline-flex;align-items:center;gap:7px;background:var(--navy);color:var(--white);
+  padding:8px 16px;border-radius:7px;font-size:.83rem;font-weight:600;text-decoration:none;transition:background .18s;}
+.lesson-video-link:hover{background:var(--navy-light);}
+.lesson-edit-btn{margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;}
 
-/* Lesson content area */
-.lesson-content-display { margin-bottom: 14px; }
-.lesson-body-text {
-  background: var(--white); border-radius: 8px; padding: 16px 18px;
-  font-size: 0.91rem; line-height: 1.75; color: var(--text);
-  border-left: 3px solid var(--gold); margin-bottom: 10px;
-  white-space: pre-wrap;
-}
-.lesson-video-link {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--navy); color: var(--white); padding: 9px 18px;
-  border-radius: 7px; font-size: 0.85rem; font-weight: 600; text-decoration: none;
-  transition: background 0.18s;
-}
-.lesson-video-link:hover { background: var(--navy-light); }
-.lesson-edit-btn { margin-bottom: 14px; }
+/* STATUS BUTTONS */
+.status-btns{display:flex;gap:7px;margin-bottom:13px;flex-wrap:wrap;}
+.status-btn{padding:6px 14px;border-radius:20px;border:1.5px solid;font-size:.79rem;
+  cursor:pointer;font-family:'Jost',sans-serif;font-weight:500;transition:all .18s;}
+.status-btn.not_started{border-color:#ccc;color:#777;background:var(--white);}
+.status-btn.not_started.active{background:#eee;color:var(--text);}
+.status-btn.in_progress{border-color:#e8a020;color:#a06010;background:var(--white);}
+.status-btn.in_progress.active{background:#fff8e8;}
+.status-btn.complete{border-color:#2a8040;color:var(--green);background:var(--white);}
+.status-btn.complete.active{background:var(--green-light);}
 
-/* ── STATUS BUTTONS ── */
-.status-btns { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
-.status-btn { padding: 7px 16px; border-radius: 20px; border: 1.5px solid; font-size: 0.8rem; cursor: pointer; font-family: 'Jost', sans-serif; font-weight: 500; transition: all 0.18s; }
-.status-btn.not_started { border-color: #ccc; color: #777; background: var(--white); }
-.status-btn.not_started.active { background: #eee; color: var(--text); }
-.status-btn.in_progress { border-color: #e8a020; color: #a06010; background: var(--white); }
-.status-btn.in_progress.active { background: #fff8e8; }
-.status-btn.complete { border-color: #2a8040; color: var(--green); background: var(--white); }
-.status-btn.complete.active { background: var(--green-light); }
+/* QUIZ SECTION */
+.quiz-section{margin-top:13px;border-top:1px solid var(--cream-dark);padding-top:12px;}
+.quiz-section-title{font-size:.7rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#6a3a9a;margin-bottom:10px;}
+.quiz-score-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:16px;font-size:.8rem;font-weight:600;}
+.quiz-score-badge.pass{background:#e8f4ee;color:var(--green);}
+.quiz-score-badge.fail{background:#fdf0f0;color:var(--red);}
+.quiz-score-badge.neutral{background:#f0eaff;color:#6a3a9a;}
+.quiz-q-item{background:var(--white);border-radius:8px;padding:13px 15px;margin-bottom:8px;border:1.5px solid var(--cream-dark);}
+.quiz-q-text{font-size:.88rem;font-weight:500;margin-bottom:10px;}
+.quiz-options{display:flex;flex-direction:column;gap:6px;}
+.quiz-option{display:flex;align-items:center;gap:9px;padding:7px 11px;border-radius:6px;
+  border:1.5px solid var(--cream-dark);cursor:pointer;font-size:.85rem;transition:all .15s;background:var(--white);}
+.quiz-option:hover{border-color:var(--gold);background:#fdf8f0;}
+.quiz-option.selected{border-color:var(--navy);background:rgba(26,39,68,.06);}
+.quiz-option.correct{border-color:var(--green);background:var(--green-light);color:var(--green);}
+.quiz-option.wrong{border-color:var(--red);background:#fdf0f0;color:var(--red);}
+.quiz-option input[type=radio]{accent-color:var(--navy);}
 
-/* ── COMMENTS ── */
-.comments-section { margin-top: 16px; border-top: 1px solid var(--cream-dark); padding-top: 14px; }
-.comments-section-title { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
-.comment-bubble { background: var(--white); border-radius: 9px; padding: 11px 13px; margin-bottom: 7px; border-left: 3px solid var(--cream-dark); position: relative; }
-.comment-bubble.teacher { border-left-color: var(--navy); }
-.comment-bubble.student { border-left-color: var(--gold); }
-.comment-meta { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; flex-wrap: wrap; }
-.comment-author { font-weight: 600; font-size: 0.83rem; color: var(--navy); }
-.comment-role { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 10px; }
-.comment-role.teacher { background: rgba(26,39,68,0.1); color: var(--navy); }
-.comment-role.student { background: rgba(201,168,76,0.15); color: var(--amber); }
-.comment-time { font-size: 0.72rem; color: var(--text-muted); margin-left: auto; }
-.comment-text { font-size: 0.88rem; line-height: 1.55; color: var(--text); }
-.comment-del { position: absolute; top: 8px; right: 9px; background: none; border: none; color: #ccc; cursor: pointer; font-size: 0.78rem; display: none; padding: 2px 4px; }
-.comment-bubble:hover .comment-del { display: block; }
-.comment-del:hover { color: var(--red); }
-.no-comments { color: var(--text-muted); font-size: 0.84rem; font-style: italic; padding: 4px 0 8px; }
-.comment-form { display: flex; gap: 8px; align-items: flex-end; margin-top: 8px; }
-.comment-form textarea { flex: 1; padding: 9px 12px; border: 1.5px solid var(--cream-dark); border-radius: 8px; font-family: 'Jost', sans-serif; font-size: 0.86rem; resize: none; height: 58px; background: var(--white); transition: border-color 0.2s; }
-.comment-form textarea:focus { outline: none; border-color: var(--gold); }
+/* COMMENTS */
+.comments-section{margin-top:13px;border-top:1px solid var(--cream-dark);padding-top:12px;}
+.comments-section-title{font-size:.7rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);margin-bottom:9px;}
+.comment-bubble{background:var(--white);border-radius:9px;padding:10px 12px;margin-bottom:6px;border-left:3px solid var(--cream-dark);position:relative;}
+.comment-bubble.teacher{border-left-color:var(--navy);}
+.comment-bubble.student{border-left-color:var(--gold);}
+.comment-meta{display:flex;align-items:center;gap:7px;margin-bottom:4px;flex-wrap:wrap;}
+.comment-author{font-weight:600;font-size:.82rem;color:var(--navy);}
+.comment-role{font-size:.6rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:10px;}
+.comment-role.teacher{background:rgba(26,39,68,.1);color:var(--navy);}
+.comment-role.student{background:rgba(201,168,76,.15);color:var(--amber);}
+.comment-time{font-size:.7rem;color:var(--text-muted);margin-left:auto;}
+.comment-text{font-size:.87rem;line-height:1.52;color:var(--text);}
+.comment-del{position:absolute;top:7px;right:8px;background:none;border:none;color:#ccc;cursor:pointer;font-size:.76rem;display:none;padding:2px 4px;}
+.comment-bubble:hover .comment-del{display:block;}
+.comment-del:hover{color:var(--red);}
+.no-comments{color:var(--text-muted);font-size:.83rem;font-style:italic;padding:3px 0 7px;}
+.comment-form{display:flex;gap:7px;align-items:flex-end;margin-top:7px;}
+.comment-form textarea{flex:1;padding:8px 11px;border:1.5px solid var(--cream-dark);border-radius:8px;
+  font-family:'Jost',sans-serif;font-size:.85rem;resize:none;height:56px;background:var(--white);transition:border-color .2s;}
+.comment-form textarea:focus{outline:none;border-color:var(--gold);}
 
-/* ── TABLES ── */
-.table-wrap { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 0.87rem; }
-th { text-align: left; padding: 9px 14px; background: var(--cream-dark); color: var(--navy); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.07em; text-transform: uppercase; }
-td { padding: 10px 14px; border-bottom: 1px solid var(--cream-dark); vertical-align: middle; }
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: #fdf8f0; }
+/* TABLES */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.86rem;}
+th{text-align:left;padding:8px 13px;background:var(--cream-dark);color:var(--navy);font-weight:600;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;}
+td{padding:9px 13px;border-bottom:1px solid var(--cream-dark);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fdf8f0;}
 
-/* ── PROGRESS BARS ── */
-.progress-bar-wrap { background: var(--cream-dark); border-radius: 4px; height: 5px; flex: 1; }
-.progress-bar { height: 5px; border-radius: 4px; background: linear-gradient(90deg, var(--navy), var(--gold)); transition: width 0.4s; }
-.progress-text { font-size: 0.75rem; color: var(--text-muted); min-width: 34px; text-align: right; }
-.progress-row { display: flex; align-items: center; gap: 10px; }
+/* PROGRESS */
+.progress-bar-wrap{background:var(--cream-dark);border-radius:4px;height:5px;flex:1;}
+.progress-bar{height:5px;border-radius:4px;background:linear-gradient(90deg,var(--navy),var(--gold));transition:width .4s;}
+.progress-text{font-size:.74rem;color:var(--text-muted);min-width:32px;text-align:right;}
+.progress-row{display:flex;align-items:center;gap:9px;}
 
-/* ── BADGES ── */
-.badge { display: inline-block; padding: 3px 9px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; }
-.badge-navy { background: rgba(26,39,68,0.1); color: var(--navy); }
-.badge-gold { background: rgba(201,168,76,0.2); color: var(--amber); }
-.badge-green { background: var(--green-light); color: var(--green); }
-.badge-red { background: #fdf0f0; color: var(--red); }
+/* BADGES */
+.badge{display:inline-block;padding:2px 8px;border-radius:11px;font-size:.68rem;font-weight:600;}
+.badge-navy{background:rgba(26,39,68,.1);color:var(--navy);}
+.badge-gold{background:rgba(201,168,76,.2);color:var(--amber);}
+.badge-green{background:var(--green-light);color:var(--green);}
+.badge-purple{background:#f0eaff;color:#6a3a9a;}
 
-/* ── FILTERS & SEARCH ── */
-.filter-bar { display: flex; gap: 8px; align-items: center; margin-bottom: 18px; flex-wrap: wrap; }
-.filter-label { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; }
-.group-chip { padding: 5px 13px; border-radius: 16px; border: 1.5px solid var(--cream-dark); font-size: 0.78rem; cursor: pointer; background: var(--white); transition: all 0.18s; font-family: 'Jost', sans-serif; }
-.group-chip:hover { border-color: var(--navy); }
-.group-chip.active { background: var(--navy); color: var(--white); border-color: var(--navy); }
-.search-input { padding: 9px 14px; border: 1.5px solid var(--cream-dark); border-radius: 8px; font-family: 'Jost', sans-serif; font-size: 0.86rem; width: 240px; background: var(--white); }
-.search-input:focus { outline: none; border-color: var(--gold); }
+/* FILTER */
+.filter-bar{display:flex;gap:7px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+.filter-label{font-size:.77rem;color:var(--text-muted);font-weight:500;}
+.group-chip{padding:5px 12px;border-radius:15px;border:1.5px solid var(--cream-dark);font-size:.77rem;
+  cursor:pointer;background:var(--white);transition:all .18s;font-family:'Jost',sans-serif;}
+.group-chip:hover{border-color:var(--navy);}
+.group-chip.active{background:var(--navy);color:var(--white);border-color:var(--navy);}
 
-/* ── GRID ── */
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+/* GRID */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 
-/* ── LOADING ── */
-.loading { display: flex; align-items: center; justify-content: center; padding: 36px; color: var(--text-muted); font-style: italic; gap: 10px; }
-.spinner { width: 18px; height: 18px; border: 2px solid var(--cream-dark); border-top-color: var(--navy); border-radius: 50%; animation: spin 0.7s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
+/* LOADING */
+.loading{display:flex;align-items:center;justify-content:center;padding:32px;color:var(--text-muted);font-style:italic;gap:9px;}
+.spinner{width:17px;height:17px;border:2px solid var(--cream-dark);border-top-color:var(--navy);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
 
-/* ── TOAST ── */
-.toast-wrap { position: fixed; bottom: 22px; right: 22px; z-index: 9999; display: flex; flex-direction: column; gap: 7px; }
-.toast { background: var(--navy); color: var(--white); padding: 11px 18px; border-radius: 8px; font-size: 0.86rem; box-shadow: 0 8px 24px rgba(0,0,0,0.2); animation: slideUp 0.3s ease; max-width: 300px; }
-.toast.success { border-left: 3px solid var(--gold); }
-.toast.error { border-left: 3px solid #e05050; }
-@keyframes slideUp { from { transform: translateY(16px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+/* TOAST */
+.toast-wrap{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:6px;}
+.toast{background:var(--navy);color:var(--white);padding:10px 17px;border-radius:8px;font-size:.85rem;
+  box-shadow:0 8px 24px rgba(0,0,0,.2);animation:slideUp .3s ease;max-width:290px;}
+.toast.success{border-left:3px solid var(--gold);}
+.toast.error{border-left:3px solid #e05050;}
+@keyframes slideUp{from{transform:translateY(14px);opacity:0;}to{transform:translateY(0);opacity:1;}}
 
-/* ── MODAL ── */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.48); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
-.modal-overlay.show { display: flex; }
-.modal { background: var(--white); border-radius: 14px; padding: 30px 32px; max-width: 540px; width: 100%; max-height: 88vh; overflow-y: auto; box-shadow: 0 28px 72px rgba(0,0,0,0.32); }
-.modal-wide { max-width: 720px; }
-.modal h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--navy); margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--cream-dark); }
-.modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--cream-dark); }
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:1000;display:none;align-items:center;justify-content:center;padding:18px;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--white);border-radius:14px;padding:28px 30px;max-width:520px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 28px 72px rgba(0,0,0,.32);}
+.modal-wide{max-width:680px;}
+.modal h3{font-family:'Cormorant Garamond',serif;font-size:1.45rem;color:var(--navy);margin-bottom:16px;padding-bottom:11px;border-bottom:1px solid var(--cream-dark);}
+.modal-footer{display:flex;gap:9px;justify-content:flex-end;margin-top:20px;padding-top:14px;border-top:1px solid var(--cream-dark);}
 
-/* ── PROFILE PAGE ── */
-.profile-section { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--cream-dark); }
-.profile-section:last-child { border-bottom: none; margin-bottom: 0; }
-.profile-section h3 { font-size: 1.1rem; color: var(--navy); margin-bottom: 14px; }
+/* GROUP ROWS */
+.group-row{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;border-bottom:1px solid var(--cream-dark);}
+.group-row:last-child{border-bottom:none;}
+.group-row-name{font-weight:500;font-size:.88rem;}
+.group-row-meta{font-size:.76rem;color:var(--text-muted);}
 
-/* ── GROUPS PAGE ── */
-.group-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--cream-dark); }
-.group-row:last-child { border-bottom: none; }
-.group-row-name { font-weight: 500; font-size: 0.9rem; }
-.group-row-meta { font-size: 0.78rem; color: var(--text-muted); }
+/* PROFILE */
+.profile-section{margin-bottom:26px;padding-bottom:22px;border-bottom:1px solid var(--cream-dark);}
+.profile-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.profile-section h3{font-size:1.05rem;color:var(--navy);margin-bottom:12px;}
 
-/* ── INFO ALERT ── */
-.info-alert { background: #eef4fd; border: 1px solid #b8d0f0; color: var(--blue); padding: 12px 16px; border-radius: 8px; font-size: 0.86rem; line-height: 1.5; margin-bottom: 18px; }
+/* RESOURCES */
+.resource-card{background:var(--white);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow);margin-bottom:14px;}
+.resource-card h3{font-size:1.15rem;color:var(--navy);margin-bottom:6px;}
+.resource-card p{font-size:.85rem;color:var(--text-muted);line-height:1.55;margin-bottom:12px;}
+.resource-links{display:flex;flex-direction:column;gap:8px;}
+.resource-link{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:8px;
+  font-size:.84rem;font-weight:600;text-decoration:none;transition:all .18s;width:fit-content;}
+.resource-link.purchase{background:var(--navy);color:var(--white);}
+.resource-link.purchase:hover{background:var(--navy-light);}
+.resource-link.free{background:var(--green-light);color:var(--green);border:1px solid #a8d8b8;}
+.resource-link.free:hover{background:#d4edde;}
 
-@media (max-width: 768px) {
-  .app-layout { flex-direction: column; }
-  .sidebar { width: 100%; height: auto; min-width: unset; }
-  .sidebar-nav { max-height: 200px; overflow-y: auto; }
-  .page { padding: 18px 16px; }
-  .grid-2 { grid-template-columns: 1fr; }
-  .auth-card { padding: 32px 24px; }
+/* QUIZ BUILDER */
+.qb-question{background:var(--cream);border-radius:8px;padding:12px 14px;margin-bottom:8px;border:1.5px solid var(--cream-dark);}
+.qb-q-text{font-size:.87rem;font-weight:500;margin-bottom:6px;}
+.qb-q-meta{font-size:.75rem;color:var(--text-muted);display:flex;align-items:center;justify-content:space-between;}
+.qb-q-correct{color:var(--green);font-weight:600;}
+
+/* MANUAL GRADE */
+.grade-override-row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.grade-input{width:70px;padding:6px 9px;border:1.5px solid var(--cream-dark);border-radius:6px;
+  font-family:'Jost',sans-serif;font-size:.85rem;text-align:center;}
+.grade-input:focus{outline:none;border-color:var(--gold);}
+
+@media(max-width:768px){
+  .app-layout{flex-direction:column;}
+  .sidebar{width:100%;height:auto;min-width:unset;}
+  .sidebar-nav{max-height:180px;overflow-y:auto;}
+  .page{padding:16px 14px;}
+  .grid-2{grid-template-columns:1fr;}
+  .auth-card{padding:28px 20px;}
+  .org-type-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 
-<!-- ╔══════════════════════════════╗ -->
-<!-- ║        SETUP SCREEN         ║ -->
-<!-- ╚══════════════════════════════╝ -->
+<!-- ══ SETUP ══ -->
 <div id="setupScreen" class="screen">
   <div class="auth-bg">
-    <div class="auth-card">
+    <div class="auth-card wide">
       <div class="auth-brand">
         <div class="auth-cross">✝</div>
         <h1>Formation Tracker</h1>
-        <div class="sub">First-Time Parish Setup</div>
+        <div class="sub">First-Time Setup</div>
       </div>
       <div id="setupError" class="error-msg"></div>
-      <div class="field"><label>Parish Name</label><input id="sParishName" type="text" placeholder="e.g. St. Nicholas Parish"></div>
-      <div class="field"><label>Motto / Tagline <span style="font-weight:400;text-transform:none">(optional)</span></label><input id="sMotto" type="text" placeholder="Growing in Faith Together"></div>
-      <div class="field"><label>Admin Email</label><input id="sEmail" type="email" placeholder="admin@parish.org"></div>
-      <div class="field"><label>Admin Password</label><input id="sPassword" type="password" placeholder="Choose a strong password"></div>
-      <div class="field">
-        <label>Recovery Phrase</label>
-        <input id="sRecovery" type="text" placeholder="A phrase only you know — used to reset your password">
-        <div class="hint">⚠ Write this down and keep it safe. It's the only way to recover your admin account.</div>
+
+      <div class="setup-section">
+        <div class="setup-section-label">About Your Organization</div>
+        <div class="field"><label>Name</label><input id="sName" type="text" placeholder="e.g. St. Nicholas Parish or Springfield Academy"></div>
+        <div class="field"><label>Motto / Tagline <span style="font-weight:400;text-transform:none">(optional)</span></label><input id="sMotto" type="text" placeholder="Growing in Faith Together"></div>
       </div>
-      <div class="check-row">
-        <input type="checkbox" id="sLoadSamples" checked>
-        <label for="sLoadSamples">Load default lessons (Grades 1–8 &amp; Adult formation)</label>
+
+      <div class="setup-section">
+        <div class="setup-section-label">What type of organization are you?</div>
+        <div class="org-type-grid">
+          <div class="org-type-btn active" id="otb-eastern" onclick="selectOrgType('eastern')">
+            <span class="otb-icon">🕊</span>
+            <div class="otb-label">Eastern Catholic</div>
+            <div class="otb-sub">Byzantine, Ukrainian, Melkite, etc.</div>
+          </div>
+          <div class="org-type-btn" id="otb-western" onclick="selectOrgType('western')">
+            <span class="otb-icon">✝</span>
+            <div class="otb-label">Western Catholic</div>
+            <div class="otb-sub">Roman Rite parish</div>
+          </div>
+          <div class="org-type-btn" id="otb-other" onclick="selectOrgType('other')">
+            <span class="otb-icon">🏫</span>
+            <div class="otb-label">School or Other</div>
+            <div class="otb-sub">Any non-Catholic organization</div>
+          </div>
+        </div>
+
+        <div class="eastern-lessons-box show" id="easternLessonsBox">
+          <h4>Official Eastern Catholic Lesson Library</h4>
+          <p>Load the complete official catechetical curriculum approved by the Eastern Catholic eparchies of North America — <em>God With Us Online</em> (Grades 1–8) and the <em>Christ Our Pascha</em> Ukrainian Catechism (Adult formation).</p>
+          <div class="book-links">
+            <a class="book-link" href="https://shop.printtechofwpa.com/godwithus/" target="_blank" rel="noopener">📘 Purchase <em>God With Us</em> books (Grades 1–8)</a>
+            <a class="book-link" href="https://godwithusonline.org/teachers-manuals/" target="_blank" rel="noopener">📄 Free <em>God With Us</em> teacher manuals</a>
+            <a class="book-link" href="https://stjosaphateparchy.com/product/christ-our-pascha/" target="_blank" rel="noopener">📘 Purchase <em>Christ Our Pascha</em> (Adult)</a>
+            <a class="book-link" href="https://eeparchy.com/wp-content/uploads/2020/08/Christ-our-Pascha-Catechism-of-the-Ukrainian-Catholic-Church-by-Comission-for-the-Catehism-z-lib.org_.pdf" target="_blank" rel="noopener">📄 Free <em>Christ Our Pascha</em> PDF</a>
+          </div>
+          <div class="check-row">
+            <input type="checkbox" id="sLoadSamples" checked>
+            <label for="sLoadSamples">Load the default Eastern Catholic lesson library</label>
+          </div>
+        </div>
       </div>
-      <div class="hint" style="margin:-10px 0 16px;padding:10px 14px;background:#f0f4ff;border-radius:8px;border:1px solid #c8d8f8;color:#2a4a8a;font-size:0.82rem;line-height:1.55">
-        These are official catechetical materials approved by the Eastern Catholic eparchies of North America — drawn from <em>God With Us Online</em> (Grades 1–8) and the <em>Christ Our Pascha</em> Ukrainian Catechism (Adult formation).
+
+      <div class="setup-section">
+        <div class="setup-section-label">Admin Account</div>
+        <div class="grid-2">
+          <div class="field"><label>Email</label><input id="sEmail" type="email" placeholder="admin@parish.org"></div>
+          <div class="field"><label>Password</label><input id="sPassword" type="password" placeholder="Choose a strong password"></div>
+        </div>
+        <div class="field">
+          <label>Recovery Phrase</label>
+          <input id="sRecovery" type="text" placeholder="A secret phrase to reset your password — write it down!">
+          <div class="hint">⚠ This is the only way to recover your account if you forget your password. Keep it somewhere safe.</div>
+        </div>
       </div>
+
       <button class="btn btn-primary btn-full" onclick="doSetup()">Complete Setup →</button>
     </div>
   </div>
 </div>
 
-<!-- ╔══════════════════════════════╗ -->
-<!-- ║        LOGIN SCREEN         ║ -->
-<!-- ╚══════════════════════════════╝ -->
+<!-- ══ LOGIN ══ -->
 <div id="loginScreen" class="screen">
   <div class="auth-bg">
     <div class="auth-card">
@@ -334,9 +417,7 @@ tr:hover td { background: #fdf8f0; }
   </div>
 </div>
 
-<!-- ╔══════════════════════════════╗ -->
-<!-- ║     FORGOT PASSWORD SCREEN  ║ -->
-<!-- ╚══════════════════════════════╝ -->
+<!-- ══ FORGOT PASSWORD ══ -->
 <div id="forgotScreen" class="screen">
   <div class="auth-bg">
     <div class="auth-card">
@@ -347,11 +428,11 @@ tr:hover td { background: #fdf8f0; }
       </div>
       <div id="forgotError" class="error-msg"></div>
       <div id="forgotSuccess" class="success-msg"></div>
-      <div class="info-alert">Enter your admin email address and the recovery phrase you chose during setup.</div>
+      <div class="info-box">Enter your admin email and the recovery phrase you set during setup.</div>
       <div class="field"><label>Admin Email</label><input id="fEmail" type="email" placeholder="admin@parish.org"></div>
       <div class="field"><label>Recovery Phrase</label><input id="fPhrase" type="text" placeholder="Your recovery phrase"></div>
-      <div class="field"><label>New Password</label><input id="fNewPwd" type="password" placeholder="Choose a new password"></div>
-      <div class="field"><label>Confirm New Password</label><input id="fConfPwd" type="password" placeholder="Repeat new password"></div>
+      <div class="field"><label>New Password</label><input id="fNewPwd" type="password"></div>
+      <div class="field"><label>Confirm New Password</label><input id="fConfPwd" type="password"></div>
       <button class="btn btn-primary btn-full" onclick="doResetPassword()">Reset Password →</button>
       <div class="auth-divider">—</div>
       <button class="btn btn-ghost btn-full" onclick="show('loginScreen')">← Back to Sign In</button>
@@ -359,9 +440,7 @@ tr:hover td { background: #fdf8f0; }
   </div>
 </div>
 
-<!-- ╔══════════════════════════════╗ -->
-<!-- ║         MAIN APP            ║ -->
-<!-- ╚══════════════════════════════╝ -->
+<!-- ══ MAIN APP ══ -->
 <div id="appScreen" class="screen">
   <div class="app-layout">
     <aside class="sidebar">
@@ -381,30 +460,26 @@ tr:hover td { background: #fdf8f0; }
 
 <div class="toast-wrap" id="toastWrap"></div>
 
-<!-- ╔══════════════════════════════╗ -->
-<!-- ║          MODALS             ║ -->
-<!-- ╚══════════════════════════════╝ -->
+<!-- ══ MODALS ══ -->
 
-<!-- Add Student -->
 <div class="modal-overlay" id="addStudentModal">
   <div class="modal">
-    <h3>Add Student</h3>
+    <h3 id="addStudentModalTitle">Add Student</h3>
     <div id="addStudentError" class="error-msg"></div>
-    <div class="field"><label>Full Name</label><input id="asName" type="text" placeholder="Student's full name"></div>
-    <div class="field"><label>Email (login ID)</label><input id="asEmail" type="email" placeholder="student@email.com"></div>
-    <div class="field"><label>Temporary Password</label><input id="asPassword" type="password" placeholder="Student can change this later"></div>
-    <div class="field"><label>Group</label><select id="asGroup"></select></div>
+    <div class="field"><label>Full Name</label><input id="asName" type="text"></div>
+    <div class="field"><label>Email (login ID)</label><input id="asEmail" type="email"></div>
+    <div class="field"><label>Temporary Password</label><input id="asPassword" type="password"></div>
+    <div class="field"><label id="asGroupLabel">Group</label><select id="asGroup"></select></div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('addStudentModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="addStudent()">Add Student</button>
+      <button class="btn btn-primary" onclick="addStudent()">Add</button>
     </div>
   </div>
 </div>
 
-<!-- Add Teacher -->
 <div class="modal-overlay" id="addTeacherModal">
   <div class="modal">
-    <h3>Add Teacher</h3>
+    <h3 id="addTeacherModalTitle">Add Teacher</h3>
     <div id="addTeacherError" class="error-msg"></div>
     <div class="field"><label>Full Name</label><input id="atName" type="text"></div>
     <div class="field"><label>Email</label><input id="atEmail" type="email"></div>
@@ -412,20 +487,19 @@ tr:hover td { background: #fdf8f0; }
     <div class="field"><label>Assigned Group</label><select id="atGroup"><option value="All">All Groups</option></select></div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('addTeacherModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="addTeacher()">Add Teacher</button>
+      <button class="btn btn-primary" onclick="addTeacher()">Add</button>
     </div>
   </div>
 </div>
 
-<!-- Add Lesson -->
 <div class="modal-overlay" id="addLessonModal">
   <div class="modal modal-wide">
     <h3>Add Lesson</h3>
-    <div class="field"><label>Title</label><input id="alTitle" type="text" placeholder="Lesson title"></div>
-    <div class="field"><label>Pages / Reference <span style="font-weight:400;text-transform:none">(optional)</span></label><input id="alContent" type="text" placeholder="e.g. pp. 45-50 or Chapter 3"></div>
+    <div class="field"><label>Title</label><input id="alTitle" type="text"></div>
+    <div class="field"><label>Pages / Reference <span style="font-weight:400;text-transform:none">(optional)</span></label><input id="alContent" type="text" placeholder="e.g. pp. 45-50"></div>
     <div class="field"><label>Group</label><select id="alGroup"></select></div>
-    <div class="field"><label>Lesson Text / Chapter Content <span style="font-weight:400;text-transform:none">(optional)</span></label><textarea id="alBodyText" placeholder="Paste or type the full lesson text, chapter content, or notes here…" style="min-height:140px"></textarea></div>
-    <div class="field"><label>Video Lesson URL <span style="font-weight:400;text-transform:none">(optional)</span></label><input id="alVideoUrl" type="url" placeholder="https://youtube.com/watch?v=…"></div>
+    <div class="field"><label>Lesson Text <span style="font-weight:400;text-transform:none">(optional)</span></label><textarea id="alBodyText" placeholder="Paste chapter content or notes here…" style="min-height:110px"></textarea></div>
+    <div class="field"><label>Video URL <span style="font-weight:400;text-transform:none">(optional)</span></label><input id="alVideoUrl" type="url" placeholder="https://youtube.com/watch?v=…"></div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('addLessonModal')">Cancel</button>
       <button class="btn btn-primary" onclick="addLesson()">Add Lesson</button>
@@ -433,7 +507,6 @@ tr:hover td { background: #fdf8f0; }
   </div>
 </div>
 
-<!-- Edit Lesson (teacher) -->
 <div class="modal-overlay" id="editLessonModal">
   <div class="modal modal-wide">
     <h3>Edit Lesson</h3>
@@ -441,45 +514,143 @@ tr:hover td { background: #fdf8f0; }
     <div class="field"><label>Title</label><input id="elTitle" type="text"></div>
     <div class="field"><label>Pages / Reference</label><input id="elContent" type="text"></div>
     <div class="field"><label>Group</label><select id="elGroup"></select></div>
-    <div class="field"><label>Lesson Text / Chapter Content</label><textarea id="elBodyText" style="min-height:180px" placeholder="Full lesson content, notes, or chapter text…"></textarea></div>
-    <div class="field"><label>Video Lesson URL</label><input id="elVideoUrl" type="url" placeholder="https://…"></div>
+    <div class="field"><label>Lesson Text</label><textarea id="elBodyText" style="min-height:140px" placeholder="Full lesson content, chapter text, or notes…"></textarea></div>
+    <div class="field"><label>Video URL</label><input id="elVideoUrl" type="url" placeholder="https://…"></div>
+    <div style="background:#f8f4ff;border:1.5px solid #d8c8f8;border-radius:9px;padding:12px 15px;margin:8px 0">
+      <div class="check-row" style="margin-bottom:0">
+        <input type="checkbox" id="elQuizEnabled" onchange="toggleQuizSection()">
+        <label for="elQuizEnabled" style="font-weight:700;color:#6a3a9a;font-size:.88rem;cursor:pointer">📝 Enable Quiz for this lesson</label>
+      </div>
+      <div style="font-size:.75rem;color:#9a7abf;margin-top:4px;margin-left:26px">Off by default — check to add multiple-choice questions students can take</div>
+    </div>
+    <div id="quizBuilderSection" style="display:none;margin-top:8px">
+      <div style="background:#f8f4ff;border:1px solid #d8c8f8;border-radius:9px;padding:14px 16px">
+        <div style="font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6a3a9a;margin-bottom:10px">Quiz Questions</div>
+        <div id="qbQuestionList"></div>
+        <div style="border-top:1px solid #d8c8f8;margin-top:8px;padding-top:12px">
+          <div style="font-size:.78rem;font-weight:600;color:#6a3a9a;margin-bottom:8px">Add a Question</div>
+          <div class="field"><label>Question</label><input id="qbQuestion" type="text" placeholder="What is…"></div>
+          <div class="grid-2">
+            <div class="field"><label>Option A</label><input id="qbA" type="text"></div>
+            <div class="field"><label>Option B</label><input id="qbB" type="text"></div>
+            <div class="field"><label>Option C <span style="font-weight:400;text-transform:none">(optional)</span></label><input id="qbC" type="text"></div>
+            <div class="field"><label>Option D <span style="font-weight:400;text-transform:none">(optional)</span></label><input id="qbD" type="text"></div>
+          </div>
+          <div class="field">
+            <label>Correct Answer</label>
+            <select id="qbCorrect">
+              <option value="a">A</option><option value="b">B</option>
+              <option value="c">C</option><option value="d">D</option>
+            </select>
+          </div>
+          <button class="btn btn-gold btn-sm" onclick="addQuizQuestion()">+ Add Question</button>
+        </div>
+      </div>
+    </div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('editLessonModal')">Cancel</button>
-      <button class="btn btn-danger btn-sm" onclick="deleteLesson()">Delete Lesson</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteLesson()">Delete</button>
       <button class="btn btn-primary" onclick="saveLesson()">Save Changes</button>
     </div>
   </div>
 </div>
 
-<!-- Add Curriculum -->
 <div class="modal-overlay" id="addGroupModal">
   <div class="modal">
-    <h3>Add New Curriculum</h3>
+    <h3 id="addGroupModalTitle">Add New Curriculum</h3>
     <div id="addGroupError" class="error-msg"></div>
-    <div class="info-alert">Curricula organize students and lessons into grade levels or custom programs. Create any name that fits your parish — e.g. "RCIA Adults", "Teen Confirmation", "Young Adults".</div>
-    <div class="field"><label>Curriculum Name</label><input id="agName" type="text" placeholder="e.g. RCIA Adults"></div>
+    <div class="info-box" id="addGroupInfo">Curricula organize students and lessons. Create any name — e.g. "RCIA Adults", "Confirmation Prep", "Grade 3".</div>
+    <div class="field"><label id="addGroupFieldLabel">Curriculum Name</label><input id="agName" type="text" placeholder="e.g. RCIA Adults"></div>
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('addGroupModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="addGroup()">Create Curriculum</button>
+      <button class="btn btn-primary" onclick="addGroup()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- Take Quiz Modal -->
+<div class="modal-overlay" id="takeQuizModal">
+  <div class="modal modal-wide">
+    <h3 id="takeQuizTitle">Lesson Quiz</h3>
+    <div id="takeQuizBody"></div>
+    <div class="modal-footer" id="takeQuizFooter"></div>
+  </div>
+</div>
+
+<!-- Manual Grade Modal -->
+<div class="modal-overlay" id="gradeModal">
+  <div class="modal">
+    <h3>Override Quiz Grade</h3>
+    <input type="hidden" id="gradeAttemptId">
+    <div class="field"><label>Score (0–100)</label><input id="gradeScore" type="number" min="0" max="100" class="grade-input" style="width:100%"></div>
+    <div class="field"><label>Note for student <span style="font-weight:400;text-transform:none">(optional)</span></label><textarea id="gradeNote" placeholder="Optional feedback…" style="min-height:70px"></textarea></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('gradeModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitManualGrade()">Save Grade</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Member (admin) -->
+<div class="modal-overlay" id="editMemberModal">
+  <div class="modal">
+    <h3 id="editMemberTitle">Edit Account</h3>
+    <input type="hidden" id="emOriginalEmail">
+    <input type="hidden" id="emRole">
+    <div id="editMemberError" class="error-msg"></div>
+    <div class="field"><label>Name</label><input id="emName" type="text"></div>
+    <div class="field"><label>Email</label><input id="emEmail" type="email"></div>
+    <div class="field"><label>New Password <span style="font-weight:400;text-transform:none">(leave blank to keep current)</span></label><input id="emPassword" type="password" placeholder="Leave blank to keep unchanged"></div>
+    <div class="field" id="emGroupField"><label id="emGroupLabel">Group</label><select id="emGroup"></select></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('editMemberModal')">Cancel</button>
+      <button class="btn btn-danger btn-sm" onclick="deleteMember()">Delete</button>
+      <button class="btn btn-primary" onclick="saveEditMember()">Save Changes</button>
     </div>
   </div>
 </div>
 
 <script>
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+//  LANGUAGE SYSTEM
+// ════════════════════════════════════════════════
+const LANG = {
+  catholic: {
+    teacher:'Catechist', teachers:'Catechists', student:'Student', students:'Students',
+    curriculum:'Grade Level', curricula:'Grade Levels', lesson:'Lesson', lessons:'Lessons',
+    progress:'Formation Progress', org:'Parish', addTeacher:'Add Catechist', addStudent:'Add Student',
+    addCurriculum:'Add Grade Level', curricDesc:'Manage grade levels and formation groups for your parish.'
+  },
+  other: {
+    teacher:'Teacher', teachers:'Teachers', student:'Student', students:'Students',
+    curriculum:'Course', curricula:'Courses', lesson:'Lesson', lessons:'Lessons',
+    progress:'Progress', org:'School', addTeacher:'Add Teacher', addStudent:'Add Student',
+    addCurriculum:'Add Course', curricDesc:'Manage courses and class groups for your organization.'
+  }
+};
+function T(key) {
+  const ot = state.data?.config?.org_type || 'other';
+  return (ot === 'other' ? LANG.other : LANG.catholic)[key] || key;
+}
+
+// ════════════════════════════════════════════════
 //  STATE
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
 let state = {
   currentUser: null,
-  data: null,           // { teachers, students, lessons, progress, config, groups }
+  data: null,
   selectedStudentEmail: null,
   currentPage: null,
-  lessonComments: {},   // "email|title" => [{...}]
+  lessonComments: {},
+  quizQuestions: {},     // lesson_id => [questions]
+  quizAttempts: {},      // "email|lessonId" => [attempts]
+  _selectedOrgType: 'eastern',
+  _pendingQuizQuestions: [], // questions being built in editor
 };
 
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
 //  INIT
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
 async function init() {
   const setup = await api('/api/check-setup');
   if (setup.needsSetup) { show('setupScreen'); return; }
@@ -490,33 +661,43 @@ async function init() {
   el('loginMotto').textContent = cfg.motto || '';
 }
 
-// ════════════════════════════════════════════════════════
-//  AUTH
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+//  SETUP
+// ════════════════════════════════════════════════
+function selectOrgType(type) {
+  state._selectedOrgType = type;
+  ['eastern','western','other'].forEach(t => el('otb-'+t).classList.toggle('active', t === type));
+  el('easternLessonsBox').classList.toggle('show', type === 'eastern');
+}
+
 async function doSetup() {
   const err = el('setupError');
-  const parishName = v('sParishName'), motto = v('sMotto');
-  const adminEmail = v('sEmail'), adminPassword = v('sPassword');
-  const recoveryPhrase = v('sRecovery');
-  if (!parishName || !adminEmail || !adminPassword || !recoveryPhrase)
-    return showErr(err, 'Please fill in all required fields, including the Recovery Phrase.');
-  await api('/api/setup', 'POST', { parishName, motto, adminEmail, adminPassword, recoveryPhrase, loadSamples: el('sLoadSamples').checked });
+  err.classList.remove('show');
+  const orgName = v('sName'), motto = v('sMotto');
+  const adminEmail = v('sEmail'), adminPassword = v('sPassword'), recoveryPhrase = v('sRecovery');
+  const orgType = state._selectedOrgType;
+  if (!orgName || !adminEmail || !adminPassword || !recoveryPhrase)
+    return showErr(err, 'Please fill in all required fields including the Recovery Phrase.');
+  const loadSamples = orgType === 'eastern' && el('sLoadSamples').checked;
+  await api('/api/setup', 'POST', { parishName: orgName, motto, adminEmail, adminPassword, recoveryPhrase, orgType, loadSamples });
   toast('Setup complete! You can now sign in.', 'success');
   location.reload();
 }
 
+// ════════════════════════════════════════════════
+//  AUTH
+// ════════════════════════════════════════════════
 async function doLogin() {
-  const err = el('loginError');
-  err.classList.remove('show');
+  const err = el('loginError'); err.classList.remove('show');
   const email = v('lEmail').toLowerCase().trim(), pwd = v('lPassword');
   if (!email || !pwd) return showErr(err, 'Please enter your email and password.');
   const d = state.data;
   let user = null;
   const t = d.teachers.find(x => x.email.toLowerCase() === email && x.password === pwd);
-  if (t) user = { email: t.email, name: t.name, role: 'teacher', group: t.assigned_group };
+  if (t) user = { email:t.email, name:t.name, role:'teacher', group:t.assigned_group };
   if (!user) {
     const s = d.students.find(x => x.email.toLowerCase() === email && x.password === pwd);
-    if (s) user = { email: s.email, name: s.name, role: 'student', group: s.parish_group };
+    if (s) user = { email:s.email, name:s.name, role:'student', group:s.parish_group };
   }
   if (!user) return showErr(err, 'Invalid email or password. Please try again.');
   state.currentUser = user;
@@ -531,49 +712,50 @@ async function doResetPassword() {
   const email = v('fEmail'), phrase = v('fPhrase'), newPwd = v('fNewPwd'), confPwd = v('fConfPwd');
   if (!email || !phrase || !newPwd) return showErr(err, 'All fields are required.');
   if (newPwd !== confPwd) return showErr(err, 'Passwords do not match.');
-  if (newPwd.length < 4) return showErr(err, 'New password must be at least 4 characters.');
+  if (newPwd.length < 4) return showErr(err, 'Password must be at least 4 characters.');
   const res = await api('/api/reset-password', 'POST', { email, recoveryPhrase: phrase, newPassword: newPwd });
   if (res.error) return showErr(err, res.error);
-  suc.textContent = 'Password reset! You can now sign in with your new password.';
+  suc.textContent = 'Password reset! You can now sign in.';
   suc.classList.add('show');
-  // Update local data so login works immediately
   state.data = await api('/api/data');
-  setTimeout(() => show('loginScreen'), 2200);
+  setTimeout(() => show('loginScreen'), 2000);
 }
 
 function logout() {
-  state.currentUser = null; state.selectedStudentEmail = null; state.lessonComments = {};
+  state.currentUser = null; state.selectedStudentEmail = null;
+  state.lessonComments = {}; state.quizQuestions = {}; state.quizAttempts = {};
   show('loginScreen');
 }
 
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
 //  APP SHELL
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
 function launchApp() {
   show('appScreen');
   const u = state.currentUser;
   el('sidebarParishName').textContent = state.data.config.parish_name || 'Formation Tracker';
-  el('sidebarUser').textContent = `${u.name} · ${u.role === 'teacher' ? 'Teacher' : 'Student'}`;
+  el('sidebarUser').textContent = `${u.name} · ${u.role === 'teacher' ? T('teacher') : T('student')}`;
   buildNav();
   navigateTo(u.role === 'teacher' ? 'progress' : 'mylessons');
 }
 
 function buildNav() {
-  const u = state.currentUser;
+  const u = state.currentUser; const isAdmin = u.group === 'All';
   let html = '';
   if (u.role === 'teacher') {
     html += navSec('Teaching');
-    html += navItem('progress', '📋', 'Student Progress');
-    html += navItem('mylessons_teacher', '📖', 'Lessons');
-    if (u.group === 'All') {
+    html += navItem('progress', '📋', `${T('student')} Progress`);
+    html += navItem('mylessons_teacher', '📖', T('lessons'));
+    if (isAdmin) {
       html += navSec('Administration');
-      html += navItem('students', '👥', 'Students');
-      html += navItem('teachers', '🎓', 'Teachers');
-      html += navItem('groups', '🗂', 'Curricula');
+      html += navItem('students', '👥', T('students'));
+      html += navItem('teachers', '🎓', T('teachers'));
+      html += navItem('groups', '🗂', T('curricula'));
+      if (state.data.config.org_type === 'eastern') html += navItem('resources', '📚', 'Resources');
     }
   } else {
     html += navSec('My Formation');
-    html += navItem('mylessons', '📖', 'My Lessons');
+    html += navItem('mylessons', '📖', `My ${T('lessons')}`);
   }
   el('sidebarNav').innerHTML = html;
 }
@@ -586,57 +768,88 @@ function navItem(id, icon, label) {
 function navigateTo(page) {
   state.currentPage = page;
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const ni = el('nav_' + page);
-  if (ni) ni.classList.add('active');
-  const main = el('mainContent');
+  const ni = el('nav_' + page); if (ni) ni.classList.add('active');
   const map = {
-    progress: renderTeacherProgress,
-    mylessons_teacher: renderLessonsAdmin,
-    students: renderStudentsPage,
-    teachers: renderTeachersPage,
-    groups: renderGroupsPage,
-    mylessons: renderStudentLessons,
-    profile: renderProfilePage,
+    progress: renderTeacherProgress, mylessons_teacher: renderLessonsAdmin,
+    students: renderStudentsPage, teachers: renderTeachersPage,
+    groups: renderGroupsPage, mylessons: renderStudentLessons,
+    profile: renderProfilePage, resources: renderResourcesPage,
   };
-  if (map[page]) main.innerHTML = map[page]();
+  if (map[page]) el('mainContent').innerHTML = map[page]();
   populateGroupDropdowns();
+  updateModalLabels();
 }
 
-// ════════════════════════════════════════════════════════
-//  GROUP DROPDOWNS (dynamic from state.data.groups)
-// ════════════════════════════════════════════════════════
 function populateGroupDropdowns() {
   const groups = state.data.groups || [];
   ['asGroup','alGroup','elGroup'].forEach(id => {
-    const sel = document.getElementById(id);
-    if (!sel) return;
+    const sel = document.getElementById(id); if (!sel) return;
     const cur = sel.value;
     sel.innerHTML = groups.map(g => `<option value="${g}">${g}</option>`).join('');
     if (cur && groups.includes(cur)) sel.value = cur;
   });
-  // Teacher group dropdown (has "All" prepended)
   const atSel = document.getElementById('atGroup');
   if (atSel) {
     const cur = atSel.value;
-    atSel.innerHTML = `<option value="All">All Groups</option>` + groups.map(g => `<option value="${g}">${g}</option>`).join('');
+    atSel.innerHTML = `<option value="All">All ${T('curricula')}</option>` + groups.map(g => `<option value="${g}">${g}</option>`).join('');
     if (cur) atSel.value = cur;
   }
 }
 
-// ════════════════════════════════════════════════════════
+function updateModalLabels() {
+  const setT = (id, text) => { const e = el(id); if(e) e.textContent = text; };
+  setT('addStudentModalTitle', T('addStudent'));
+  setT('addTeacherModalTitle', T('addTeacher'));
+  setT('addGroupModalTitle', `Add New ${T('curriculum')}`);
+  setT('addGroupFieldLabel', `${T('curriculum')} Name`);
+  setT('addGroupInfo', T('curricDesc'));
+  setT('asGroupLabel', T('curriculum'));
+}
+
+// ════════════════════════════════════════════════
+//  ONBOARDING CHECKLIST
+// ════════════════════════════════════════════════
+function renderOnboarding() {
+  const d = state.data;
+  const hasCurricula = d.groups && d.groups.length > 0;
+  const hasLessons = d.lessons && d.lessons.length > 0;
+  const hasStudents = d.students && d.students.length > 0;
+  const hasTeachers = d.teachers && d.teachers.filter(t => t.assigned_group !== 'All' || d.teachers.length > 1).length > 0;
+  const allDone = hasCurricula && hasLessons && hasStudents;
+  if (allDone) return '';
+
+  const step = (done, text) => `
+    <div class="onboarding-step ${done ? 'done' : 'todo'}">
+      <div class="step-check">${done ? '✓' : ''}</div>
+      <div class="step-text">${text}</div>
+    </div>`;
+
+  return `<div class="onboarding-card">
+    <h3>✦ Getting Started</h3>
+    <div class="onboarding-steps">
+      ${step(true, 'Organization configured')}
+      ${step(hasCurricula, hasCurricula ? `${T('curricula')} created` : `<a onclick="navigateTo('groups')">Create your first ${T('curriculum')}</a> (e.g. "Grade 1", "Adult Formation")`)}
+      ${step(hasLessons, hasLessons ? 'Lessons ready' : `<a onclick="navigateTo('mylessons_teacher')">Add lessons</a> to your ${T('curricula')}`)}
+      ${step(hasStudents, hasStudents ? `${T('students')} added` : `<a onclick="navigateTo('students')">Add ${T('students')}</a> and assign them to a ${T('curriculum')}`)}
+    </div>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════
 //  TEACHER: PROGRESS PAGE
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
 function renderTeacherProgress() {
   const u = state.currentUser;
   const students = state.data.students.filter(s => u.group === 'All' || s.parish_group === u.group);
-  let html = `<div class="page"><div class="page-header"><div class="page-header-text"><h2>Student Progress</h2><p>View and track each student's lesson completion.</p></div></div>`;
+  let html = `<div class="page">${u.group === 'All' ? renderOnboarding() : ''}
+    <div class="page-header"><div class="page-header-text"><h2>${T('student')} Progress</h2><p>View and track each ${T('student')}'s lesson completion.</p></div></div>`;
   if (!students.length) {
-    html += `<div class="card"><p style="color:var(--text-muted)">No students in your group yet.</p></div>`;
+    html += `<div class="card"><p style="color:var(--text-muted)">No ${T('students')} in your group yet.</p></div>`;
   } else {
     html += `<div class="student-tabs">`;
     students.forEach((s, i) => {
       const pct = getStudentPct(s);
-      html += `<button class="student-tab${i===0?' active':''}" onclick="selectStudent('${escJ(s.email)}',this)">${s.name} <span style="opacity:.65;font-size:.72rem">${pct}%</span></button>`;
+      html += `<button class="student-tab${i===0?' active':''}" onclick="selectStudent('${escJ(s.email)}',this)">${s.name} <span style="opacity:.65;font-size:.7rem">${pct}%</span></button>`;
     });
     html += `</div><div id="studentDetail">${buildStudentDetail(students[0].email)}</div>`;
     state.selectedStudentEmail = students[0].email;
@@ -671,32 +884,31 @@ function buildStudentDetail(email) {
   }).length;
   const pct = lessons.length ? Math.round(done / lessons.length * 100) : 0;
   let html = `<div class="card">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:13px;flex-wrap:wrap;gap:10px">
       <div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;color:var(--navy)">${student.name}</div>
-        <div style="font-size:0.8rem;color:var(--text-muted)">${student.parish_group} · ${student.email}</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--navy)">${student.name}</div>
+        <div style="font-size:.78rem;color:var(--text-muted)">${student.parish_group} · ${student.email}</div>
       </div>
       <div style="text-align:right">
-        <div style="font-size:1.55rem;font-weight:700;color:var(--navy)">${pct}%</div>
-        <div style="font-size:0.72rem;color:var(--text-muted)">${done} / ${lessons.length} complete</div>
+        <div style="font-size:1.5rem;font-weight:700;color:var(--navy)">${pct}%</div>
+        <div style="font-size:.7rem;color:var(--text-muted)">${done} / ${lessons.length} complete</div>
       </div>
     </div>
-    <div class="progress-row" style="margin-bottom:20px"><div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%"></div></div></div>`;
+    <div class="progress-row" style="margin-bottom:18px"><div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%"></div></div></div>`;
   if (!lessons.length) {
-    html += `<p style="color:var(--text-muted);font-size:.88rem">No lessons for ${student.parish_group} yet.</p>`;
+    html += `<p style="color:var(--text-muted);font-size:.87rem">No lessons for ${student.parish_group} yet.</p>`;
   } else {
     lessons.forEach((l, idx) => {
       const prog = state.data.progress.find(p => p.student_email === email && p.lesson_title === l.title);
-      const status = prog ? prog.status : 'not_started';
-      html += buildLessonItem(l, idx, status, email, true);
+      html += buildLessonItem(l, idx, prog ? prog.status : 'not_started', email, true);
     });
   }
   return html + `</div>`;
 }
 
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
 //  STUDENT: MY LESSONS
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
 function renderStudentLessons() {
   const u = state.currentUser;
   const lessons = state.data.lessons.filter(l => l.parish_group === u.group);
@@ -705,50 +917,57 @@ function renderStudentLessons() {
     return p && p.status === 'complete';
   }).length;
   const pct = lessons.length ? Math.round(done / lessons.length * 100) : 0;
-  let html = `<div class="page"><div class="page-header"><div class="page-header-text"><h2>My Lessons</h2><p>${u.group} · ${done} of ${lessons.length} completed</p></div></div>
-    <div class="card" style="padding:16px 20px;margin-bottom:20px">
+  let html = `<div class="page">
+    <div class="page-header"><div class="page-header-text"><h2>My ${T('lessons')}</h2><p>${u.group} · ${done} of ${lessons.length} completed</p></div></div>
+    <div class="card" style="padding:14px 18px;margin-bottom:16px">
       <div class="progress-row"><div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%"></div></div><span class="progress-text">${pct}%</span></div>
     </div>`;
   if (!lessons.length) {
-    html += `<div class="card"><p style="color:var(--text-muted)">No lessons for your group yet. Ask your teacher!</p></div>`;
+    html += `<div class="card"><p style="color:var(--text-muted)">No lessons for your group yet.</p></div>`;
   } else {
     lessons.forEach((l, idx) => {
       const prog = state.data.progress.find(p => p.student_email === u.email && p.lesson_title === l.title);
-      const status = prog ? prog.status : 'not_started';
-      html += buildLessonItem(l, idx, status, u.email, false);
+      html += buildLessonItem(l, idx, prog ? prog.status : 'not_started', u.email, false);
     });
   }
   return html + `</div>`;
 }
 
-// ════════════════════════════════════════════════════════
-//  SHARED LESSON ITEM BUILDER
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+//  LESSON ITEM (shared)
+// ════════════════════════════════════════════════
 function buildLessonItem(lesson, idx, status, studentEmail, isTeacher) {
-  const labels = { not_started: 'Not Started', in_progress: 'In Progress', complete: 'Complete' };
+  const labels = { not_started:'Not Started', in_progress:'In Progress', complete:'Complete' };
   const cacheKey = `${studentEmail}|${lesson.title}`;
   const hasBody = lesson.body_text && lesson.body_text.trim();
   const hasVideo = lesson.video_url && lesson.video_url.trim();
-  const hasContent = hasBody || hasVideo;
+  const hasQuiz = lesson.quiz_enabled;
 
-  return `<div class="lesson-item" id="li_${escJ(lesson.id + '_' + studentEmail)}">
-    <div class="lesson-header" onclick="toggleLesson(this,'${escJ(studentEmail)}','${escJ(lesson.title)}')">
-      <span class="lesson-num">${idx + 1}</span>
+  return `<div class="lesson-item" id="li_${escJ(lesson.id+'_'+studentEmail)}">
+    <div class="lesson-header" onclick="toggleLesson(this,'${escJ(studentEmail)}','${escJ(lesson.title)}',${lesson.id})">
+      <span class="lesson-num">${idx+1}</span>
       <span class="lesson-title-txt">${lesson.title}</span>
       ${lesson.content ? `<span class="lesson-ref">${lesson.content}</span>` : ''}
       <span class="status-dot ${status}"></span>
       <span class="lesson-status-label">${labels[status]}</span>
-      ${hasContent ? `<span class="has-content-pip" title="Lesson content available">📄</span>` : ''}
+      ${hasBody||hasVideo ? `<span class="has-content-pip" title="Content available">📄</span>` : ''}
+      ${hasQuiz ? `<span class="quiz-pip" title="Quiz available">📝</span>` : ''}
       <span class="expand-arrow">▼</span>
     </div>
     <div class="lesson-body">
-      ${isTeacher ? `<div class="lesson-edit-btn"><button class="btn btn-ghost btn-sm" onclick="openEditLesson(${lesson.id},event)">✏️ Edit Lesson</button></div>` : ''}
-      ${hasContent ? buildLessonContentDisplay(lesson) : ''}
+      ${isTeacher ? `<div class="lesson-edit-btn">
+        <button class="btn btn-ghost btn-sm" onclick="openEditLesson(${lesson.id},event)">✏️ Edit Lesson</button>
+      </div>` : ''}
+      ${hasBody||hasVideo ? buildLessonContentDisplay(lesson) : ''}
       <div class="status-btns">
         <button class="status-btn not_started${status==='not_started'?' active':''}" onclick="setStatus(event,'${escJ(studentEmail)}','${escJ(lesson.title)}','not_started')">Not Started</button>
         <button class="status-btn in_progress${status==='in_progress'?' active':''}" onclick="setStatus(event,'${escJ(studentEmail)}','${escJ(lesson.title)}','in_progress')">In Progress</button>
         <button class="status-btn complete${status==='complete'?' active':''}" onclick="setStatus(event,'${escJ(studentEmail)}','${escJ(lesson.title)}','complete')">Complete</button>
       </div>
+      ${hasQuiz ? `<div class="quiz-section" id="qs_${escJ(cacheKey)}">
+        <div class="quiz-section-title">📝 Quiz</div>
+        <div id="qz_${escJ(cacheKey)}"><div class="loading"><div class="spinner"></div> Loading…</div></div>
+      </div>` : ''}
       <div class="comments-section">
         <div class="comments-section-title">💬 Comments</div>
         <div id="cl_${escJ(cacheKey)}" class="comments-list"><div class="loading"><div class="spinner"></div> Loading…</div></div>
@@ -763,48 +982,213 @@ function buildLessonItem(lesson, idx, status, studentEmail, isTeacher) {
 
 function buildLessonContentDisplay(lesson) {
   let html = `<div class="lesson-content-display">`;
-  if (lesson.body_text && lesson.body_text.trim()) {
+  if (lesson.body_text && lesson.body_text.trim())
     html += `<div class="lesson-body-text">${lesson.body_text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`;
-  }
-  if (lesson.video_url && lesson.video_url.trim()) {
+  if (lesson.video_url && lesson.video_url.trim())
     html += `<a class="lesson-video-link" href="${lesson.video_url}" target="_blank" rel="noopener">▶ Watch Video Lesson</a>`;
-  }
-  html += `</div>`;
-  return html;
+  return html + `</div>`;
 }
 
-function toggleLesson(header, studentEmail, lessonTitle) {
+function toggleLesson(header, studentEmail, lessonTitle, lessonId) {
   const item = header.parentElement;
   const expanding = !item.classList.contains('expanded');
   document.querySelectorAll('.lesson-item.expanded').forEach(e => e.classList.remove('expanded'));
-  if (expanding) { item.classList.add('expanded'); loadComments(studentEmail, lessonTitle); }
+  if (expanding) {
+    item.classList.add('expanded');
+    loadComments(studentEmail, lessonTitle);
+    const lesson = state.data.lessons.find(l => l.id === lessonId);
+    if (lesson && lesson.quiz_enabled) loadQuizStatus(studentEmail, lessonId, lessonTitle, item);
+  }
 }
 
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+//  QUIZ — STUDENT VIEW
+// ════════════════════════════════════════════════
+async function loadQuizStatus(studentEmail, lessonId, lessonTitle, item) {
+  const cacheKey = `${studentEmail}|${lessonTitle}`;
+  const qzEl = el('qz_' + escJ(cacheKey));
+  if (!qzEl) return;
+  const isTeacher = state.currentUser.role === 'teacher';
+  const attempts = await api(`/api/quiz-attempts?student_email=${encodeURIComponent(studentEmail)}&lesson_id=${lessonId}`);
+  state.quizAttempts[cacheKey] = attempts;
+  const latest = attempts[0];
+  const score = latest ? (latest.manual_score !== null && latest.manual_score !== undefined ? latest.manual_score : latest.auto_score) : null;
+
+  if (!latest) {
+    if (isTeacher) {
+      qzEl.innerHTML = `<p style="color:var(--text-muted);font-size:.84rem;font-style:italic">Student has not taken this quiz yet.</p>`;
+    } else {
+      qzEl.innerHTML = `<button class="btn btn-primary btn-sm" onclick="openQuiz(${lessonId},'${escJ(lessonTitle)}','${escJ(studentEmail)}')">Take Quiz</button>`;
+    }
+  } else {
+    const cls = score >= 70 ? 'pass' : 'fail';
+    const scoreHtml = `<span class="quiz-score-badge ${cls}">Score: ${score}%</span>`;
+    const noteHtml = latest.teacher_note ? `<div style="font-size:.8rem;color:var(--text-muted);margin-top:5px;font-style:italic">${latest.teacher_note}</div>` : '';
+    const overrideHtml = isTeacher
+      ? `<button class="btn btn-ghost btn-xs" style="margin-left:8px" onclick="openGradeModal(${latest.id})">Override Grade</button>` : '';
+    const retakeHtml = !isTeacher ? `<button class="btn btn-ghost btn-xs" style="margin-left:8px" onclick="openQuiz(${lessonId},'${escJ(lessonTitle)}','${escJ(studentEmail)}')">Retake</button>` : '';
+    qzEl.innerHTML = `<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">${scoreHtml}${overrideHtml}${retakeHtml}</div>${noteHtml}`;
+  }
+}
+
+async function openQuiz(lessonId, lessonTitle, studentEmail) {
+  const questions = await api(`/api/quiz-questions/${lessonId}`);
+  if (!questions.length) { toast('No questions set up for this quiz yet.', 'error'); return; }
+  state.quizQuestions[lessonId] = questions;
+  state._quizState = { lessonId, lessonTitle, studentEmail, questions, answers: {}, submitted: false };
+  el('takeQuizTitle').textContent = lessonTitle;
+  renderQuizBody();
+  openModal('takeQuizModal');
+}
+
+function renderQuizBody() {
+  const qs = state._quizState;
+  let html = `<div style="font-size:.82rem;color:var(--text-muted);margin-bottom:14px">${qs.questions.length} question${qs.questions.length!==1?'s':''}</div>`;
+  qs.questions.forEach((q, qi) => {
+    const opts = [['a',q.opt_a],['b',q.opt_b],['c',q.opt_c],['d',q.opt_d]].filter(o => o[1]);
+    html += `<div class="quiz-q-item">
+      <div class="quiz-q-text">${qi+1}. ${q.question_text}</div>
+      <div class="quiz-options">`;
+    opts.forEach(([key, text]) => {
+      const sel = qs.answers[q.id] === key;
+      let cls = sel ? 'selected' : '';
+      if (qs.submitted) {
+        if (key === q.correct) cls = 'correct';
+        else if (sel && key !== q.correct) cls = 'wrong';
+        else cls = '';
+      }
+      html += `<label class="quiz-option ${cls}">
+        <input type="radio" name="q_${q.id}" value="${key}" ${sel?'checked':''} ${qs.submitted?'disabled':''} onchange="selectAnswer(${q.id},'${key}')">
+        <span>${key.toUpperCase()}. ${text}</span>
+      </label>`;
+    });
+    html += `</div></div>`;
+  });
+  el('takeQuizBody').innerHTML = html;
+
+  if (!qs.submitted) {
+    el('takeQuizFooter').innerHTML = `
+      <button class="btn btn-ghost" onclick="closeModal('takeQuizModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="submitQuiz()">Submit Quiz</button>`;
+  } else {
+    el('takeQuizFooter').innerHTML = `<button class="btn btn-primary" onclick="closeModal('takeQuizModal')">Done</button>`;
+  }
+}
+
+function selectAnswer(questionId, value) {
+  if (state._quizState) state._quizState.answers[questionId] = value;
+}
+
+async function submitQuiz() {
+  const qs = state._quizState;
+  const answered = Object.keys(qs.answers).length;
+  if (answered < qs.questions.length) {
+    if (!confirm(`You've answered ${answered} of ${qs.questions.length} questions. Submit anyway?`)) return;
+  }
+  let correct = 0;
+  qs.questions.forEach(q => { if (qs.answers[q.id] === q.correct) correct++; });
+  const auto_score = Math.round(correct / qs.questions.length * 100);
+  await api('/api/quiz-attempts', 'POST', {
+    student_email: qs.studentEmail, lesson_id: qs.lessonId,
+    answers: qs.answers, auto_score
+  });
+  qs.submitted = true;
+  renderQuizBody();
+  toast(`Quiz submitted! Score: ${auto_score}%`, auto_score >= 70 ? 'success' : 'error');
+  // Refresh quiz status in lesson body
+  const lesson = state.data.lessons.find(l => l.id === qs.lessonId);
+  if (lesson) {
+    const cacheKey = `${qs.studentEmail}|${qs.lessonTitle}`;
+    const item = el('li_' + escJ(lesson.id + '_' + qs.studentEmail));
+    if (item) loadQuizStatus(qs.studentEmail, qs.lessonId, qs.lessonTitle, item);
+  }
+}
+
+// Teacher manual grade
+function openGradeModal(attemptId) {
+  el('gradeAttemptId').value = attemptId;
+  el('gradeScore').value = '';
+  el('gradeNote').value = '';
+  openModal('gradeModal');
+}
+
+async function submitManualGrade() {
+  const id = el('gradeAttemptId').value;
+  const score = parseInt(el('gradeScore').value);
+  const note = el('gradeNote').value.trim();
+  if (isNaN(score) || score < 0 || score > 100) { toast('Enter a score between 0 and 100.', 'error'); return; }
+  await api(`/api/quiz-attempts/${id}/grade`, 'PUT', { manual_score: score, teacher_note: note });
+  toast('Grade updated.', 'success');
+  closeModal('gradeModal');
+  // Refresh
+  if (state.selectedStudentEmail) el('studentDetail').innerHTML = buildStudentDetail(state.selectedStudentEmail);
+}
+
+// ════════════════════════════════════════════════
+//  QUIZ BUILDER (teacher edit modal)
+// ════════════════════════════════════════════════
+function toggleQuizSection() {
+  const enabled = el('elQuizEnabled').checked;
+  el('quizBuilderSection').style.display = enabled ? 'block' : 'none';
+}
+
+async function loadQuizBuilder(lessonId) {
+  const questions = await api(`/api/quiz-questions/${lessonId}`);
+  state._pendingQuizQuestions = questions.map(q => ({...q}));
+  renderQBList();
+}
+
+function renderQBList() {
+  const qs = state._pendingQuizQuestions;
+  const list = el('qbQuestionList');
+  if (!list) return;
+  if (!qs.length) { list.innerHTML = `<p style="color:var(--text-muted);font-size:.83rem;font-style:italic;margin-bottom:8px">No questions yet.</p>`; return; }
+  list.innerHTML = qs.map((q, i) => {
+    const opts = [['A',q.opt_a],['B',q.opt_b],['C',q.opt_c],['D',q.opt_d]].filter(o=>o[1]).map(o=>o[0]+'. '+o[1]).join(' · ');
+    return `<div class="qb-question">
+      <div class="qb-q-text">${i+1}. ${q.question_text}</div>
+      <div class="qb-q-meta">
+        <span>${opts}</span>
+        <span class="qb-q-correct">✓ ${q.correct.toUpperCase()}</span>
+        <button class="btn btn-danger btn-xs" onclick="removeQBQuestion(${i})">Remove</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function addQuizQuestion() {
+  const qText = v('qbQuestion'), a = v('qbA'), b = v('qbB'), c = v('qbC'), d = v('qbD');
+  const correct = v('qbCorrect') || 'a';
+  if (!qText || !a || !b) { toast('Question text, Option A, and Option B are required.', 'error'); return; }
+  state._pendingQuizQuestions.push({ question_text: qText, opt_a: a, opt_b: b, opt_c: c, opt_d: d, correct });
+  ['qbQuestion','qbA','qbB','qbC','qbD'].forEach(id => { const e = el(id); if(e) e.value = ''; });
+  renderQBList();
+}
+
+function removeQBQuestion(idx) {
+  state._pendingQuizQuestions.splice(idx, 1);
+  renderQBList();
+}
+
+// ════════════════════════════════════════════════
 //  COMMENTS
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
 async function loadComments(studentEmail, lessonTitle) {
   const key = `${studentEmail}|${lessonTitle}`;
-  const listEl = el('cl_' + escJ(key));
-  if (!listEl) return;
+  const listEl = el('cl_' + escJ(key)); if (!listEl) return;
   const params = new URLSearchParams({ student_email: studentEmail, lesson_title: lessonTitle });
   const comments = await api(`/api/comments?${params}`);
   state.lessonComments[key] = comments;
-  renderComments(listEl, comments, studentEmail, lessonTitle);
-}
-
-function renderComments(listEl, comments, studentEmail, lessonTitle) {
-  if (!listEl) return;
   if (!comments || !comments.length) { listEl.innerHTML = `<div class="no-comments">No comments yet.</div>`; return; }
   listEl.innerHTML = comments.map(c => {
     const dt = new Date(c.created_at);
     const when = dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + ' at ' + dt.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
     const canDel = state.currentUser.email === c.author_email || state.currentUser.role === 'teacher';
     return `<div class="comment-bubble ${c.role}">
-      ${canDel ? `<button class="comment-del" onclick="delComment(${c.id},'${escJ(studentEmail)}','${escJ(lessonTitle)}')">✕</button>` : ''}
+      ${canDel?`<button class="comment-del" onclick="delComment(${c.id},'${escJ(studentEmail)}','${escJ(lessonTitle)}')">✕</button>`:''}
       <div class="comment-meta">
         <span class="comment-author">${c.author_name}</span>
-        <span class="comment-role ${c.role}">${c.role === 'teacher' ? 'Teacher' : 'Student'}</span>
+        <span class="comment-role ${c.role}">${c.role==='teacher'?T('teacher'):'Student'}</span>
         <span class="comment-time">${when}</span>
       </div>
       <div class="comment-text">${c.comment_text.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div>
@@ -817,59 +1201,55 @@ async function postComment(studentEmail, lessonTitle) {
   const ta = el('ct_' + escJ(key));
   if (!ta || !ta.value.trim()) { toast('Please write a comment.', 'error'); return; }
   const u = state.currentUser;
-  await api('/api/comments', 'POST', { student_email: studentEmail, lesson_title: lessonTitle, author_email: u.email, author_name: u.name, role: u.role, comment_text: ta.value.trim() });
+  await api('/api/comments','POST',{ student_email:studentEmail, lesson_title:lessonTitle, author_email:u.email, author_name:u.name, role:u.role, comment_text:ta.value.trim() });
   ta.value = '';
   await loadComments(studentEmail, lessonTitle);
-  toast('Comment posted.', 'success');
+  toast('Comment posted.','success');
 }
 
 async function delComment(id, studentEmail, lessonTitle) {
   if (!confirm('Delete this comment?')) return;
-  await api(`/api/comments/${id}`, 'DELETE');
+  await api(`/api/comments/${id}`,'DELETE');
   await loadComments(studentEmail, lessonTitle);
-  toast('Deleted.', 'success');
+  toast('Deleted.','success');
 }
 
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
 //  STATUS
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
 async function setStatus(event, studentEmail, lessonTitle, newStatus) {
   event.stopPropagation();
   const item = event.target.closest('.lesson-item');
   item.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
-  const dot = item.querySelector('.status-dot');
-  dot.className = `status-dot ${newStatus}`;
-  const labels = { not_started: 'Not Started', in_progress: 'In Progress', complete: 'Complete' };
+  item.querySelector('.status-dot').className = `status-dot ${newStatus}`;
+  const labels = { not_started:'Not Started', in_progress:'In Progress', complete:'Complete' };
   item.querySelector('.lesson-status-label').textContent = labels[newStatus];
-  const ex = state.data.progress.find(p => p.student_email === studentEmail && p.lesson_title === lessonTitle);
-  const body = { student_email: studentEmail, lesson_title: lessonTitle, status: newStatus, date: new Date().toISOString(), t_comment: ex?.t_comment || '', s_comment: ex?.s_comment || '' };
-  await api('/api/progress', 'POST', body);
-  const idx = state.data.progress.findIndex(p => p.student_email === studentEmail && p.lesson_title === lessonTitle);
-  if (idx >= 0) state.data.progress[idx] = body; else state.data.progress.push(body);
-  toast('Progress saved.', 'success');
+  const ex = state.data.progress.find(p => p.student_email===studentEmail && p.lesson_title===lessonTitle);
+  const body = { student_email:studentEmail, lesson_title:lessonTitle, status:newStatus, date:new Date().toISOString(), t_comment:ex?.t_comment||'', s_comment:ex?.s_comment||'' };
+  await api('/api/progress','POST',body);
+  const idx = state.data.progress.findIndex(p => p.student_email===studentEmail && p.lesson_title===lessonTitle);
+  if (idx>=0) state.data.progress[idx]=body; else state.data.progress.push(body);
+  toast('Progress saved.','success');
 }
 
-// ════════════════════════════════════════════════════════
-//  LESSONS ADMIN (Teacher)
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+//  LESSONS ADMIN
+// ════════════════════════════════════════════════
 function renderLessonsAdmin() {
   const u = state.currentUser;
   const groups = state.data.groups || [];
-  const allLessonGroups = [...new Set(state.data.lessons.map(l => l.parish_group))];
-  const displayGroups = [...new Set([...groups, ...allLessonGroups])];
-  const filterGroup = displayGroups.includes(u.group) ? u.group : (displayGroups[0] || '');
-  window._lessonFilterGroup = filterGroup;
-
+  const allLG = [...new Set(state.data.lessons.map(l => l.parish_group))];
+  const dg = [...new Set([...groups,...allLG])];
+  const fg = dg.includes(u.group) ? u.group : (dg[0] || '');
+  window._lessonFilterGroup = fg;
   let html = `<div class="page"><div class="page-header">
-    <div class="page-header-text"><h2>Lessons</h2><p>Add content, video links, and manage all lessons.</p></div>
-    <button class="btn btn-gold" onclick="openModal('addLessonModal')">+ Add Lesson</button>
+    <div class="page-header-text"><h2>${T('lessons')}</h2><p>Manage lesson content, videos, and quizzes.</p></div>
+    <button class="btn btn-gold" onclick="openModal('addLessonModal')">+ Add ${T('lesson')}</button>
   </div>
-  <div class="filter-bar"><span class="filter-label">Group:</span>`;
-  displayGroups.forEach(g => {
-    html += `<button class="group-chip${g===filterGroup?' active':''}" onclick="filterLG('${escJ(g)}')">${g}</button>`;
-  });
-  html += `</div><div id="lessonsAdminList">${buildLAL(filterGroup)}</div></div>`;
+  <div class="filter-bar"><span class="filter-label">${T('curriculum')}:</span>`;
+  dg.forEach(g => html += `<button class="group-chip${g===fg?' active':''}" onclick="filterLG('${escJ(g)}')">${g}</button>`);
+  html += `</div><div id="lessonsAdminList">${buildLAL(fg)}</div></div>`;
   return html;
 }
 
@@ -879,7 +1259,7 @@ function filterLG(group) {
   el('lessonsAdminList').innerHTML = buildLAL(group);
 }
 
-function toggleTeacherLesson(header, lessonId) {
+function toggleTeacherLesson(header) {
   const item = header.parentElement;
   const expanding = !item.classList.contains('expanded');
   document.querySelectorAll('#lessonsAdminList .lesson-item.expanded').forEach(e => e.classList.remove('expanded'));
@@ -888,32 +1268,34 @@ function toggleTeacherLesson(header, lessonId) {
 
 function buildLAL(group) {
   const lessons = state.data.lessons.filter(l => l.parish_group === group);
-  if (!lessons.length) return `<div class="card"><p style="color:var(--text-muted)">No lessons in this curriculum yet. Use "+ Add Lesson" to create one.</p></div>`;
+  if (!lessons.length) return `<div class="card"><p style="color:var(--text-muted)">No ${T('lessons')} in this ${T('curriculum')} yet.</p></div>`;
   let html = `<div>`;
   lessons.forEach((l, i) => {
     const hasBody = l.body_text && l.body_text.trim();
     const hasVideo = l.video_url && l.video_url.trim();
+    const hasQuiz = l.quiz_enabled;
     html += `<div class="lesson-item" id="tli_${l.id}">
-      <div class="lesson-header" onclick="toggleTeacherLesson(this, ${l.id})">
-        <span class="lesson-num">${i + 1}</span>
+      <div class="lesson-header" onclick="toggleTeacherLesson(this)">
+        <span class="lesson-num">${i+1}</span>
         <span class="lesson-title-txt">${l.title}</span>
         ${l.content ? `<span class="lesson-ref">${l.content}</span>` : ''}
-        ${hasBody ? `<span class="has-content-pip" title="Has lesson text">📄</span>` : ''}
+        ${hasBody ? `<span class="has-content-pip" title="Has text">📄</span>` : ''}
         ${hasVideo ? `<span class="has-content-pip" title="Has video">▶</span>` : ''}
+        ${hasQuiz ? `<span class="quiz-pip" title="Quiz enabled">📝</span>` : ''}
         <span class="expand-arrow">▼</span>
       </div>
       <div class="lesson-body">
-        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
           <button class="btn btn-ghost btn-sm" onclick="openEditLesson(${l.id},event)">✏️ Edit Lesson</button>
         </div>
-        ${hasBody || hasVideo ? buildLessonContentDisplay(l) : `<p style="color:var(--text-muted);font-size:.85rem;font-style:italic">No lesson text or video added yet. Click "Edit Lesson" to add content.</p>`}
+        ${hasBody||hasVideo ? buildLessonContentDisplay(l) : `<p style="color:var(--text-muted);font-size:.84rem;font-style:italic">No content added yet. Click Edit to add text or a video.</p>`}
       </div>
     </div>`;
   });
   return html + `</div>`;
 }
 
-function openEditLesson(lessonId, event) {
+async function openEditLesson(lessonId, event) {
   if (event) event.stopPropagation();
   const lesson = state.data.lessons.find(l => l.id === lessonId);
   if (!lesson) return;
@@ -922,175 +1304,314 @@ function openEditLesson(lessonId, event) {
   el('elContent').value = lesson.content || '';
   el('elBodyText').value = lesson.body_text || '';
   el('elVideoUrl').value = lesson.video_url || '';
+  el('elQuizEnabled').checked = !!lesson.quiz_enabled;
+  state._pendingQuizQuestions = [];
+  el('quizBuilderSection').style.display = lesson.quiz_enabled ? 'block' : 'none';
   populateGroupDropdowns();
   setTimeout(() => { const sel = el('elGroup'); if (sel) sel.value = lesson.parish_group; }, 50);
+  if (lesson.quiz_enabled) await loadQuizBuilder(lessonId);
   openModal('editLessonModal');
 }
 
 async function saveLesson() {
   const id = el('elId').value;
-  const body = { title: v('elTitle'), content: v('elContent'), body_text: el('elBodyText').value, video_url: v('elVideoUrl'), parish_group: v('elGroup') };
-  await api(`/api/lessons/${id}`, 'PUT', body);
-  // Update local state
+  const quizEnabled = el('elQuizEnabled').checked ? 1 : 0;
+  const body = { title:v('elTitle'), content:v('elContent'), body_text:el('elBodyText').value, video_url:v('elVideoUrl'), parish_group:v('elGroup'), quiz_enabled:quizEnabled };
+  await api(`/api/lessons/${id}`,'PUT',body);
+  // Save quiz questions
+  await api(`/api/quiz-questions/${id}`,'POST',{ questions: state._pendingQuizQuestions });
   const idx = state.data.lessons.findIndex(l => l.id == id);
   if (idx >= 0) state.data.lessons[idx] = { ...state.data.lessons[idx], ...body };
-  toast('Lesson saved!', 'success');
+  toast('Lesson saved!','success');
   closeModal('editLessonModal');
   if (state.currentPage === 'mylessons_teacher') navigateTo('mylessons_teacher');
   else if (state.currentPage === 'progress') el('studentDetail').innerHTML = buildStudentDetail(state.selectedStudentEmail);
 }
 
 async function deleteLesson() {
-  const id = el('elId').value;
-  const title = v('elTitle') || 'this lesson';
+  const id = el('elId').value, title = v('elTitle') || 'this lesson';
   if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
-  await api(`/api/lessons/${id}`, 'DELETE');
+  await api(`/api/lessons/${id}`,'DELETE');
   state.data.lessons = state.data.lessons.filter(l => l.id != id);
-  toast('Lesson deleted.', 'success');
+  toast('Lesson deleted.','success');
   closeModal('editLessonModal');
   navigateTo('mylessons_teacher');
 }
 
 async function addLesson() {
-  const body = {
-    title: v('alTitle'), content: v('alContent'), group: v('alGroup'),
-    body_text: el('alBodyText').value, video_url: v('alVideoUrl')
-  };
-  if (!body.title) { toast('Title is required.', 'error'); return; }
-  const res = await api('/api/lessons', 'POST', body);
-  state.data.lessons.push({ id: res.id, title: body.title, content: body.content, parish_group: body.group, body_text: body.body_text, video_url: body.video_url });
-  toast('Lesson added!', 'success');
+  const body = { title:v('alTitle'), content:v('alContent'), group:v('alGroup'), body_text:el('alBodyText').value, video_url:v('alVideoUrl') };
+  if (!body.title) { toast('Title is required.','error'); return; }
+  const res = await api('/api/lessons','POST',body);
+  state.data.lessons.push({ id:res.id, title:body.title, content:body.content, parish_group:body.group, body_text:body.body_text, video_url:body.video_url, quiz_enabled:0 });
+  toast('Lesson added!','success');
   closeModal('addLessonModal');
   navigateTo('mylessons_teacher');
 }
 
-// ════════════════════════════════════════════════════════
-//  STUDENTS PAGE
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+//  STUDENTS
+// ════════════════════════════════════════════════
 function renderStudentsPage() {
-  let html = `<div class="page"><div class="page-header">
-    <div class="page-header-text"><h2>Students</h2><p>Manage student accounts and group assignments.</p></div>
-    <button class="btn btn-gold" onclick="openModal('addStudentModal')">+ Add Student</button>
-  </div>`;
   const groups = state.data.groups || [];
+  let html = `<div class="page"><div class="page-header">
+    <div class="page-header-text"><h2>${T('students')}</h2><p>Manage ${T('student')} accounts and ${T('curriculum')} assignments.</p></div>
+    <button class="btn btn-gold" onclick="openModal('addStudentModal')">${T('addStudent')}</button>
+  </div>`;
   if (!state.data.students.length) {
-    html += `<div class="card"><p style="color:var(--text-muted)">No students yet. Add your first student!</p></div>`;
+    html += `<div class="card"><p style="color:var(--text-muted)">No ${T('students')} yet.</p></div>`;
   } else {
     groups.forEach(g => {
       const students = state.data.students.filter(s => s.parish_group === g);
       if (!students.length) return;
-      html += `<div class="card"><div class="card-title">${g} <span style="font-size:.8rem;font-weight:400;color:var(--text-muted)">(${students.length} student${students.length!==1?'s':''})</span></div>
-        <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Progress</th></tr></thead><tbody>`;
+      html += `<div class="card"><div class="card-title">${g} <span style="font-size:.78rem;font-weight:400;color:var(--text-muted)">(${students.length})</span></div>
+        <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Progress</th><th></th></tr></thead><tbody>`;
       students.forEach(s => {
         const pct = getStudentPct(s);
-        html += `<tr><td>${s.name}</td><td style="color:var(--text-muted);font-size:.83rem">${s.email}</td>
-          <td><div class="progress-row"><div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%"></div></div><span class="progress-text">${pct}%</span></div></td></tr>`;
+        html += `<tr>
+          <td><a style="font-weight:600;color:var(--navy);cursor:pointer;text-decoration:none;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--navy)'" onclick="goToStudentProgress('${escJ(s.email)}')">${s.name}</a></td>
+          <td style="color:var(--text-muted);font-size:.82rem">${s.email}</td>
+          <td><div class="progress-row"><div class="progress-bar-wrap"><div class="progress-bar" style="width:${pct}%"></div></div><span class="progress-text">${pct}%</span></div></td>
+          <td><button class="btn btn-ghost btn-xs" onclick="openEditMember('${escJ(s.email)}','student')">Edit</button></td>
+        </tr>`;
       });
       html += `</tbody></table></div></div>`;
     });
-    // Students in groups not in the groups table
-    const ungrouped = state.data.students.filter(s => !groups.includes(s.parish_group));
-    if (ungrouped.length) {
-      html += `<div class="card"><div class="card-title">Other Groups</div><div class="table-wrap"><table><thead><tr><th>Name</th><th>Group</th><th>Email</th></tr></thead><tbody>`;
-      ungrouped.forEach(s => { html += `<tr><td>${s.name}</td><td><span class="badge badge-gold">${s.parish_group}</span></td><td style="font-size:.82rem;color:var(--text-muted)">${s.email}</td></tr>`; });
-      html += `</tbody></table></div></div>`;
-    }
   }
   return html + `</div>`;
 }
 
 async function addStudent() {
   const err = el('addStudentError');
-  const body = { name: v('asName'), email: v('asEmail'), password: v('asPassword'), group: v('asGroup') };
-  if (!body.name || !body.email) return showErr(err, 'Name and email are required.');
-  const res = await api('/api/students', 'POST', body);
+  const body = { name:v('asName'), email:v('asEmail'), password:v('asPassword'), group:v('asGroup') };
+  if (!body.name || !body.email) return showErr(err,'Name and email are required.');
+  const res = await api('/api/students','POST',body);
   if (res.error) return showErr(err, res.error);
-  state.data.students.push({ name: body.name, email: body.email, parish_group: body.group, password: body.password });
-  toast('Student added!', 'success');
+  state.data.students.push({ name:body.name, email:body.email, parish_group:body.group, password:body.password });
+  toast(`${T('student')} added!`,'success');
   closeModal('addStudentModal');
   navigateTo('students');
 }
 
-// ════════════════════════════════════════════════════════
-//  TEACHERS PAGE
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+//  TEACHERS
+// ════════════════════════════════════════════════
 function renderTeachersPage() {
   let html = `<div class="page"><div class="page-header">
-    <div class="page-header-text"><h2>Teachers</h2><p>Manage teacher accounts and group assignments.</p></div>
-    <button class="btn btn-gold" onclick="openModal('addTeacherModal')">+ Add Teacher</button>
+    <div class="page-header-text"><h2>${T('teachers')}</h2><p>Manage ${T('teacher')} accounts.</p></div>
+    <button class="btn btn-gold" onclick="openModal('addTeacherModal')">${T('addTeacher')}</button>
   </div>
-  <div class="card"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Assigned Group</th></tr></thead><tbody>`;
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Assigned ${T('curriculum')}</th><th></th></tr></thead><tbody>`;
   state.data.teachers.forEach(t => {
-    html += `<tr><td>${t.name}</td><td style="color:var(--text-muted);font-size:.83rem">${t.email}</td>
-      <td><span class="badge badge-navy">${t.assigned_group}</span></td></tr>`;
+    html += `<tr>
+      <td style="font-weight:500">${t.name}</td>
+      <td style="color:var(--text-muted);font-size:.82rem">${t.email}</td>
+      <td><span class="badge badge-navy">${t.assigned_group}</span></td>
+      <td><button class="btn btn-ghost btn-xs" onclick="openEditMember('${escJ(t.email)}','teacher')">Edit</button></td>
+    </tr>`;
   });
   return html + `</tbody></table></div></div></div>`;
 }
 
 async function addTeacher() {
   const err = el('addTeacherError');
-  const body = { name: v('atName'), email: v('atEmail'), password: v('atPassword'), assigned_group: v('atGroup') };
-  if (!body.name || !body.email) return showErr(err, 'Name and email are required.');
-  const res = await api('/api/teachers', 'POST', body);
-  if (res.error) return showErr(err, res.error);
-  state.data.teachers.push({ name: body.name, email: body.email, assigned_group: body.assigned_group, password: body.password });
-  toast('Teacher added!', 'success');
+  const body = { name:v('atName'), email:v('atEmail'), password:v('atPassword'), assigned_group:v('atGroup') };
+  if (!body.name || !body.email) return showErr(err,'Name and email are required.');
+  const res = await api('/api/teachers','POST',body);
+  if (res.error) return showErr(err,res.error);
+  state.data.teachers.push({ name:body.name, email:body.email, assigned_group:body.assigned_group, password:body.password });
+  toast(`${T('teacher')} added!`,'success');
   closeModal('addTeacherModal');
   navigateTo('teachers');
 }
 
-// ════════════════════════════════════════════════════════
-//  GROUPS PAGE
-// ════════════════════════════════════════════════════════
+function openEditMember(email, role) {
+  const arr = role === 'teacher' ? state.data.teachers : state.data.students;
+  const member = arr.find(x => x.email === email);
+  if (!member) return;
+  el('emOriginalEmail').value = email;
+  el('emRole').value = role;
+  el('emName').value = member.name;
+  el('emEmail').value = member.email;
+  el('emPassword').value = '';
+  el('editMemberTitle').textContent = role === 'teacher' ? `Edit ${T('teacher')}` : `Edit ${T('student')}`;
+  // Group field
+  const groups = state.data.groups || [];
+  const groupSel = el('emGroup');
+  if (role === 'teacher') {
+    groupSel.innerHTML = `<option value="All">All ${T('curricula')}</option>` + groups.map(g=>`<option value="${g}">${g}</option>`).join('');
+    groupSel.value = member.assigned_group;
+    el('emGroupLabel').textContent = `Assigned ${T('curriculum')}`;
+  } else {
+    groupSel.innerHTML = groups.map(g=>`<option value="${g}">${g}</option>`).join('');
+    groupSel.value = member.parish_group;
+    el('emGroupLabel').textContent = T('curriculum');
+  }
+  openModal('editMemberModal');
+}
+
+async function saveEditMember() {
+  const err = el('editMemberError'); err.classList.remove('show');
+  const role = el('emRole').value;
+  const original_email = el('emOriginalEmail').value;
+  const name = v('emName'), email = v('emEmail'), password = v('emPassword');
+  const group = v('emGroup');
+  if (!name || !email) return showErr(err, 'Name and email are required.');
+  let res;
+  if (role === 'teacher') {
+    res = await api('/api/admin/teacher','PUT',{ original_email, name, email, password: password||undefined, assigned_group: group });
+  } else {
+    res = await api('/api/admin/student','PUT',{ original_email, name, email, password: password||undefined, parish_group: group });
+  }
+  if (res.error) return showErr(err, res.error);
+  // Update local state
+  const arr = role === 'teacher' ? state.data.teachers : state.data.students;
+  const idx = arr.findIndex(x => x.email === original_email);
+  if (idx >= 0) {
+    arr[idx].name = name; arr[idx].email = email;
+    if (role === 'teacher') arr[idx].assigned_group = group; else arr[idx].parish_group = group;
+    if (password) arr[idx].password = password;
+  }
+  toast('Account updated!','success');
+  closeModal('editMemberModal');
+  navigateTo(role === 'teacher' ? 'teachers' : 'students');
+}
+
+async function deleteMember() {
+  const role = el('emRole').value;
+  const email = el('emOriginalEmail').value;
+  const name = el('emName').value;
+  if (!confirm(`Delete ${role} "${name}"? This cannot be undone.`)) return;
+  if (role === 'teacher') {
+    await api(`/api/admin/teacher/${encodeURIComponent(email)}`,'DELETE');
+    state.data.teachers = state.data.teachers.filter(t => t.email !== email);
+    navigateTo('teachers');
+  } else {
+    await api(`/api/admin/student/${encodeURIComponent(email)}`,'DELETE');
+    state.data.students = state.data.students.filter(s => s.email !== email);
+    navigateTo('students');
+  }
+  toast('Account deleted.','success');
+  closeModal('editMemberModal');
+}
+
+function goToStudentProgress(email) {
+  navigateTo('progress');
+  // Wait for render then select the student
+  setTimeout(() => {
+    const tabs = document.querySelectorAll('.student-tab');
+    tabs.forEach(tab => {
+      if (tab.getAttribute('onclick') && tab.getAttribute('onclick').includes(escJ(email))) {
+        tab.click();
+      }
+    });
+  }, 50);
+}
+
+// ════════════════════════════════════════════════
+//  CURRICULA / GROUPS
+// ════════════════════════════════════════════════
 function renderGroupsPage() {
   const groups = state.data.groups || [];
   let html = `<div class="page"><div class="page-header">
-    <div class="page-header-text"><h2>Curricula</h2><p>Create and manage grade levels or custom curricula for your parish.</p></div>
-    <button class="btn btn-gold" onclick="openModal('addGroupModal')">+ Add Curriculum</button>
-  </div>
-  <div class="card">
-    <div class="card-title">All Curricula</div>`;
+    <div class="page-header-text"><h2>${T('curricula')}</h2><p>${T('curricDesc')}</p></div>
+    <button class="btn btn-gold" onclick="openModal('addGroupModal')">${T('addCurriculum')}</button>
+  </div>`;
   if (!groups.length) {
-    html += `<p style="color:var(--text-muted)">No curricula yet.</p>`;
+    html += `<div class="card"><p style="color:var(--text-muted)">No ${T('curricula')} yet.</p></div>`;
   } else {
     groups.forEach(g => {
-      const studentCount = state.data.students.filter(s => s.parish_group === g).length;
-      const lessonCount = state.data.lessons.filter(l => l.parish_group === g).length;
-      html += `<div class="group-row">
-        <div>
-          <div class="group-row-name">${g}</div>
-          <div class="group-row-meta">${studentCount} student${studentCount!==1?'s':''} · ${lessonCount} lesson${lessonCount!==1?'s':''}</div>
+      const sc = state.data.students.filter(s => s.parish_group === g).length;
+      const lessons = state.data.lessons.filter(l => l.parish_group === g);
+      const lc = lessons.length;
+      const canDelete = sc === 0 && lc === 0;
+      html += `<div class="card" style="padding:0;overflow:hidden;margin-bottom:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;background:var(--white);transition:background .15s" onclick="toggleCurriculumLessons('cg_${escJ(g)}',this)">
+          <div>
+            <div style="font-weight:600;font-size:.95rem">${g}</div>
+            <div style="font-size:.76rem;color:var(--text-muted);margin-top:2px">${sc} ${T('student')}${sc!==1?'s':''} · ${lc} ${T('lesson')}${lc!==1?'s':''}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <button class="btn btn-ghost btn-xs" onclick="event.stopPropagation();deleteGroup('${escJ(g)}')" ${!canDelete?'disabled title="Remove students and lessons first"':''}>Remove</button>
+            <span style="font-size:.62rem;color:var(--text-muted);transition:transform .22s" id="arr_${escJ(g)}">▼</span>
+          </div>
         </div>
-        <button class="btn btn-ghost btn-xs" onclick="deleteGroup('${escJ(g)}')" ${studentCount > 0 || lessonCount > 0 ? 'disabled title="Remove students and lessons first"':''}>Remove</button>
+        <div id="cg_${escJ(g)}" style="display:none;border-top:1px solid var(--cream-dark);padding:14px 18px;background:#fdf8f0">
+          ${lc === 0
+            ? `<p style="color:var(--text-muted);font-size:.85rem;font-style:italic">No lessons yet. Go to <a style="color:var(--navy);font-weight:600;cursor:pointer" onclick="navigateTo('mylessons_teacher')">Lessons</a> to add some.</p>`
+            : lessons.map((l, i) => `
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--cream-dark)">
+                <span style="font-size:.68rem;color:var(--text-muted);min-width:22px">${i+1}</span>
+                <span style="flex:1;font-size:.88rem;font-weight:500">${l.title}</span>
+                ${l.content ? `<span style="font-size:.7rem;color:var(--text-muted);font-style:italic">${l.content}</span>` : ''}
+                ${l.quiz_enabled ? `<span class="quiz-pip" title="Quiz enabled">📝</span>` : ''}
+                ${l.body_text||l.video_url ? `<span class="has-content-pip" title="Has content">📄</span>` : ''}
+              </div>`).join('')
+          }
+          ${lc > 0 ? `<div style="margin-top:10px"><button class="btn btn-ghost btn-sm" onclick="navigateTo('mylessons_teacher')">Manage Lessons →</button></div>` : ''}
+        </div>
       </div>`;
     });
   }
-  return html + `</div></div>`;
+  return html + `</div>`;
+}
+
+function toggleCurriculumLessons(id, header) {
+  const panel = el(id);
+  const g = id.replace('cg_','');
+  const arrow = el('arr_' + g);
+  const open = panel.style.display === 'none';
+  panel.style.display = open ? 'block' : 'none';
+  if (arrow) arrow.style.transform = open ? 'rotate(180deg)' : '';
+  header.style.background = open ? '#f5f0e8' : 'var(--white)';
 }
 
 async function addGroup() {
-  const err = el('addGroupError');
-  const name = v('agName');
-  if (!name) return showErr(err, 'Please enter a group name.');
-  const res = await api('/api/groups', 'POST', { name });
-  if (res.error) return showErr(err, res.error);
+  const err = el('addGroupError'), name = v('agName');
+  if (!name) return showErr(err,`Please enter a ${T('curriculum').toLowerCase()} name.`);
+  const res = await api('/api/groups','POST',{ name });
+  if (res.error) return showErr(err,res.error);
   state.data.groups.push(name);
-  toast(`Curriculum "${name}" created!`, 'success');
+  toast(`${T('curriculum')} "${name}" created!`,'success');
   closeModal('addGroupModal');
   navigateTo('groups');
 }
 
 async function deleteGroup(name) {
-  if (!confirm(`Remove the curriculum "${name}"?`)) return;
-  await api(`/api/groups/${encodeURIComponent(name)}`, 'DELETE');
+  if (!confirm(`Remove the ${T('curriculum').toLowerCase()} "${name}"?`)) return;
+  await api(`/api/groups/${encodeURIComponent(name)}`,'DELETE');
   state.data.groups = state.data.groups.filter(g => g !== name);
-  toast('Curriculum removed.', 'success');
+  toast(`${T('curriculum')} removed.`,'success');
   navigateTo('groups');
 }
 
-// ════════════════════════════════════════════════════════
-//  PROFILE PAGE
-// ════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════
+//  RESOURCES (Eastern Catholic only)
+// ════════════════════════════════════════════════
+function renderResourcesPage() {
+  return `<div class="page"><div class="page-header">
+    <div class="page-header-text"><h2>Resources</h2><p>Catechetical materials for Eastern Catholic formation.</p></div>
+  </div>
+  <div class="resource-card">
+    <h3>God With Us Online — Grades 1–8</h3>
+    <p>The official faith formation series for children from the Byzantine Catholic Archeparchy of Pittsburgh, approved for use across Eastern Catholic eparchies in North America. Covers all aspects of Eastern Christian faith and liturgical life from first grade through eighth.</p>
+    <div class="resource-links">
+      <a class="resource-link purchase" href="https://shop.printtechofwpa.com/godwithus/" target="_blank" rel="noopener">📘 Purchase Student Books</a>
+      <a class="resource-link free" href="https://godwithusonline.org/teachers-manuals/" target="_blank" rel="noopener">📄 Free Teacher Manuals (PDF)</a>
+    </div>
+  </div>
+  <div class="resource-card">
+    <h3>Christ Our Pascha — Adult Formation</h3>
+    <p>The official catechism of the Ukrainian Catholic Church, providing a comprehensive presentation of Eastern Christian theology, moral teaching, and spiritual life. Widely used for adult formation across Byzantine Catholic and Ukrainian Catholic parishes in North America.</p>
+    <div class="resource-links">
+      <a class="resource-link purchase" href="https://stjosaphateparchy.com/product/christ-our-pascha/" target="_blank" rel="noopener">📘 Purchase Catechism Book</a>
+      <a class="resource-link free" href="https://eeparchy.com/wp-content/uploads/2020/08/Christ-our-Pascha-Catechism-of-the-Ukrainian-Catholic-Church-by-Comission-for-the-Catehism-z-lib.org_.pdf" target="_blank" rel="noopener">📄 Free PDF Download</a>
+    </div>
+  </div></div>`;
+}
+
+// ════════════════════════════════════════════════
+//  PROFILE
+// ════════════════════════════════════════════════
 function renderProfilePage() {
   const u = state.currentUser;
   return `<div class="page"><div class="page-header">
@@ -1099,11 +1620,11 @@ function renderProfilePage() {
   <div class="card">
     <div class="profile-section">
       <h3>Account Information</h3>
-      <div style="display:flex;gap:16px;margin-bottom:12px;font-size:.88rem;flex-wrap:wrap">
+      <div style="display:flex;gap:14px;font-size:.87rem;flex-wrap:wrap">
         <span><strong>Name:</strong> ${u.name}</span>
         <span><strong>Email:</strong> ${u.email}</span>
-        <span><strong>Role:</strong> ${u.role === 'teacher' ? 'Teacher' : 'Student'}</span>
-        <span><strong>Group:</strong> ${u.group}</span>
+        <span><strong>Role:</strong> ${u.role==='teacher'?T('teacher'):'Student'}</span>
+        <span><strong>${T('curriculum')}:</strong> ${u.group}</span>
       </div>
     </div>
     <div class="profile-section">
@@ -1111,14 +1632,14 @@ function renderProfilePage() {
       <div id="profileError" class="error-msg"></div>
       <div id="profileSuccess" class="success-msg"></div>
       <div class="grid-2">
-        <div class="field"><label>New Name <span style="font-weight:400;text-transform:none">(leave blank to keep current)</span></label><input id="pName" type="text" placeholder="${u.name}"></div>
-        <div class="field"><label>New Email <span style="font-weight:400;text-transform:none">(leave blank to keep current)</span></label><input id="pEmail" type="email" placeholder="${u.email}"></div>
+        <div class="field"><label>New Name <span style="font-weight:400;text-transform:none">(leave blank to keep)</span></label><input id="pName" type="text" placeholder="${u.name}"></div>
+        <div class="field"><label>New Email <span style="font-weight:400;text-transform:none">(leave blank to keep)</span></label><input id="pEmail" type="email" placeholder="${u.email}"></div>
       </div>
       <div class="grid-2">
-        <div class="field"><label>New Password <span style="font-weight:400;text-transform:none">(leave blank to keep current)</span></label><input id="pNewPwd" type="password" placeholder="New password"></div>
-        <div class="field"><label>Confirm New Password</label><input id="pConfPwd" type="password" placeholder="Repeat new password"></div>
+        <div class="field"><label>New Password <span style="font-weight:400;text-transform:none">(leave blank to keep)</span></label><input id="pNewPwd" type="password"></div>
+        <div class="field"><label>Confirm New Password</label><input id="pConfPwd" type="password"></div>
       </div>
-      <div class="field"><label>Current Password <span style="color:var(--red)">*</span></label><input id="pCurPwd" type="password" placeholder="Required to save any changes"></div>
+      <div class="field"><label>Current Password <span style="color:var(--red)">*</span></label><input id="pCurPwd" type="password" placeholder="Required to save changes"></div>
       <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
     </div>
   </div></div>`;
@@ -1127,72 +1648,54 @@ function renderProfilePage() {
 async function saveProfile() {
   const err = el('profileError'), suc = el('profileSuccess');
   err.classList.remove('show'); suc.classList.remove('show');
-  const curPwd = v('pCurPwd'), newPwd = v('pNewPwd'), confPwd = v('pConfPwd');
-  const newName = v('pName'), newEmail = v('pEmail');
-  if (!curPwd) return showErr(err, 'Current password is required.');
-  if (newPwd && newPwd !== confPwd) return showErr(err, 'New passwords do not match.');
-  if (newPwd && newPwd.length < 4) return showErr(err, 'Password must be at least 4 characters.');
+  const curPwd=v('pCurPwd'), newPwd=v('pNewPwd'), confPwd=v('pConfPwd');
+  const newName=v('pName'), newEmail=v('pEmail');
+  if (!curPwd) return showErr(err,'Current password is required.');
+  if (newPwd && newPwd !== confPwd) return showErr(err,'New passwords do not match.');
+  if (newPwd && newPwd.length < 4) return showErr(err,'Password must be at least 4 characters.');
   const u = state.currentUser;
-  const body = { role: u.role, current_email: u.email, current_password: curPwd };
+  const body = { role:u.role, current_email:u.email, current_password:curPwd };
   if (newName) body.new_name = newName;
   if (newEmail) body.new_email = newEmail;
   if (newPwd) body.new_password = newPwd;
-  const res = await api('/api/profile', 'PUT', body);
-  if (res.error) return showErr(err, res.error);
-  // Update local state
-  if (newName) { state.currentUser.name = res.name; el('sidebarUser').textContent = `${res.name} · ${u.role === 'teacher' ? 'Teacher' : 'Student'}`; }
-  if (newEmail) { state.currentUser.email = res.email; }
-  // Update in data arrays
-  if (u.role === 'teacher') {
-    const t = state.data.teachers.find(x => x.email === u.email);
-    if (t) { if (newName) t.name = res.name; if (newEmail) t.email = res.email; if (newPwd) t.password = newPwd; }
-  } else {
-    const s = state.data.students.find(x => x.email === u.email);
-    if (s) { if (newName) s.name = res.name; if (newEmail) s.email = res.email; if (newPwd) s.password = newPwd; }
-  }
-  suc.textContent = 'Account updated successfully!';
-  suc.classList.add('show');
-  el('pCurPwd').value = ''; el('pNewPwd').value = ''; el('pConfPwd').value = '';
-  toast('Account updated!', 'success');
+  const res = await api('/api/profile','PUT',body);
+  if (res.error) return showErr(err,res.error);
+  if (newName) { state.currentUser.name=res.name; el('sidebarUser').textContent=`${res.name} · ${u.role==='teacher'?T('teacher'):'Student'}`; }
+  if (newEmail) state.currentUser.email = res.email;
+  const arr = u.role==='teacher' ? state.data.teachers : state.data.students;
+  const rec = arr.find(x => x.email===u.email);
+  if (rec) { if(newName) rec.name=res.name; if(newEmail) rec.email=res.email; if(newPwd) rec.password=newPwd; }
+  suc.textContent = 'Account updated successfully!'; suc.classList.add('show');
+  el('pCurPwd').value=''; el('pNewPwd').value=''; el('pConfPwd').value='';
+  toast('Account updated!','success');
 }
 
-// ════════════════════════════════════════════════════════
-//  MODALS
-// ════════════════════════════════════════════════════════
-function openModal(id) {
-  document.getElementById(id).classList.add('show');
-  populateGroupDropdowns();
-}
+// ════════════════════════════════════════════════
+//  MODALS & UTILS
+// ════════════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('show'); populateGroupDropdowns(); updateModalLabels(); }
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
-document.querySelectorAll('.modal-overlay').forEach(el => {
-  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('show'); });
-});
+document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('show'); }));
 
-// ════════════════════════════════════════════════════════
-//  UTILS
-// ════════════════════════════════════════════════════════
 function el(id) { return document.getElementById(id); }
-function v(id) { return (el(id)?.value || '').trim(); }
-function show(screenId) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  el(screenId).classList.add('active');
-}
-function showErr(errEl, msg) { errEl.textContent = msg; errEl.classList.add('show'); }
+function v(id) { return (el(id)?.value||'').trim(); }
+function show(screenId) { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); el(screenId).classList.add('active'); }
+function showErr(errEl,msg) { errEl.textContent=msg; errEl.classList.add('show'); }
 function escJ(s) { return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'\\"'); }
 
-async function api(url, method = 'GET', body = null) {
-  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+async function api(url, method='GET', body=null) {
+  const opts = { method, headers:{'Content-Type':'application/json'} };
   if (body) opts.body = JSON.stringify(body);
-  try { const r = await fetch(url, opts); return await r.json(); }
-  catch(e) { console.error('API error', url, e); return {}; }
+  try { const r=await fetch(url,opts); return await r.json(); }
+  catch(e) { console.error('API error',url,e); return {}; }
 }
 
-function toast(msg, type = 'success') {
-  const wrap = el('toastWrap');
-  const t = document.createElement('div');
-  t.className = `toast ${type}`; t.textContent = msg;
+function toast(msg, type='success') {
+  const wrap=el('toastWrap');
+  const t=document.createElement('div');
+  t.className=`toast ${type}`; t.textContent=msg;
   wrap.appendChild(t);
-  setTimeout(() => t.remove(), 3500);
+  setTimeout(()=>t.remove(),3500);
 }
 
 init();
